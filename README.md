@@ -1,4 +1,4 @@
-\s*ChatFlow-Autoblog\s*
+<h1>ChatFlow-Autoblog</h1>
 
 # Instructions #
 
