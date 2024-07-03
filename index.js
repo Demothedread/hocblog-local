@@ -9,6 +9,7 @@ app.use(express.static('public'));
 app.use(helmet());
 
 const PORT = process.env.PORT || 3000;
+  console.log('server be running on ${PORT}');
 const WEBFLOW_API_URL = `https://api.webflow.com/v2/collections/${process.env.WEBFLOW_COLLECTION_ID}/items`;
 const CHATGPT_API_URL = 'https://api.openai.com/v1/chat/completions';
 const DALLE_API_URL = 'https://api.openai.com/v1/images/generations';
