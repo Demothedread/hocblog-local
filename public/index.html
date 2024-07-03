@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Blog Maker</title>
+</head>
+<body>
+    <h1>Generate a Blog Post</h1>
+    <form id="blogForm">
+        <label for="topic">Write a Blog Post About:</label>
+        <input type="text" id="topic" name="topic" required><br><br>
+
+        <label for="length">Length:</label>
+        <input type="text" id="length" name="length" required><br><br>
+
+        <label for="comprehension">Audience Comprehension:</label>
+        <select id="comprehension" name="comprehension" required>
+            <option value="Explain Like I'm 5">Explain Like I'm 5</option>
+            <option value="High School">High School</option>
+            <option value="College Graduate">College Graduate</option>
+            <option value="Industry Professional">Industry Professional</option>
+            <option value="Experts Only">Experts Only</option>
+        </select><br><br>
+
+        <button type="submit">Generate</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('blogForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = {
+                topic: document.getElementById('topic').value,
+                length: document.getElementById('length').value,
+                comprehension: document.getElementById('comprehension').value
+            };
+
+            try {
+                const response = await fetch('/generate-blog', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                document.getElementById('result').innerText = result.message || 'Blog post generated and added to Webflow CMS successfully';
+            } catch (error) {
+                document.getElementById('result').innerText = 'Error generating blog post: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
