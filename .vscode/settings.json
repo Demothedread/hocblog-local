@@ -4,6 +4,6 @@
         "WEBFLOW"
     ],
     "vscode-edge-devtools.browserFlavor": "Default",
-    "vscode-edge-devtools.defaultUrl": "https://localhost:3000",
+    "vscode-edge-devtools.defaultUrl": "https://localhost:8080",
     "vscode-edge-devtools.showWorkers": true
 }
