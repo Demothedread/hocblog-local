@@ -1,18 +1,16 @@
-<h1>ChatFlow-Autoblog</h1>
+# Autoblog Instructions #
 
-# Instructions #
-
-# If Starting on a New machine, first clone the repo #
+## If Starting on a New machine, first clone the repo ##
 
 git clone hocblog-local repository
 
-# cd your repo #
+## cd your repo ##
 
-# Install the dependencies in package.json #
+## Install the dependencies in package.json ##
 
     npm install
 
-# set up local environment variables #
+## set up local environment variables ##
 
     touch.env
         CHATGPT_API_KEY=$your_openai_api_key
@@ -20,27 +18,27 @@ git clone hocblog-local repository
         WEBFLOW_COLLECTION_ID=$your_webflow_collection_id
         PORT=3000
 
-# DEPLOY to Roku #
+## DEPLOY to Roku ##
 
     git add .
     git commit -m "commit it and quit it"
     git push heroku main
 
-# Set Env Vars on Heroku #
+## Set Env Vars on Heroku ##
 
     heroku config:set CHATGPT_API_KEY=your_openai_api_key
     heroku config:set WEBFLOW_API_KEY=your_webflow_api_key
-    heroku config:set WEBFLOW_COLLECTION_ID=your_webflow_collection_i#
+    heroku config:set WEBFLOW_COLLECTION_ID=your_webflow_collection_i##
 
-# start the Application #
+## start the Application ##
 
     npm start
 
-# open the Heroku App #
+## open the Heroku App ##
 
     heroku open
 
-# check those logs for flaws/errors #
+## check those logs for flaws/errors ##
 
     heroku logs --tail
 
@@ -64,6 +62,6 @@ set env vars on heroku
     heroku config:set WEBFLOW_API_KEY=your_webflow_api_key
     heroku config:set WEBFLOW_COLLECTION_ID=your_webflow_collection_id
 
-# test locally (optional) #
+## test locally (optional) ##
 
     npm start
