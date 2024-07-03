@@ -125,6 +125,7 @@ app.post('/generate-blog', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
+app.listen(
+  56, () => {
     console.log(`Server is running on port ${PORT}`);
 });
