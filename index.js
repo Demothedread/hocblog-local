@@ -22,7 +22,7 @@ app.post('/generate-blog', async (req, res) => {
             {
                 model: 'gpt-3.5-turbo',
                 messages: [{ role: 'system', content: prompt }],
-                max_tokens: 1024,
+                max_tokens: 2000,
                 temperature: 0.7
             },
             {
@@ -32,7 +32,8 @@ app.post('/generate-blog', async (req, res) => {
                 }
             }
         );
-
+        
+        console.log('chatgpt response:',chatGptResponse.data);
         const blogContent = chatGptResponse.data.choices[0].message.content;
         console.log('Generated Blog Content:', blogContent);
 
@@ -43,8 +44,8 @@ app.post('/generate-blog', async (req, res) => {
             {
                 model: 'gpt-3.5-turbo',
                 messages: [{ role: 'system', content: summaryPrompt }],
-                max_tokens: 150,
-                temperature: 0.7
+                max_tokens: 250,
+                temperature: 0.3
             },
             {
                 headers: {
@@ -54,15 +55,16 @@ app.post('/generate-blog', async (req, res) => {
             }
         );
 
+        console.log('ChatGPT Summary Response:', summaryResponse.data);
         const blogSummary = summaryResponse.data.choices[0].message.content;
 
         // Generate Image using DALL-E
         const dalleResponse = await axios.post(
             DALLE_API_URL,
             {
-                prompt: `Create an image that captures the essence of the following blog post: ${blogContent}`,
+                prompt: `Create an image that adheres to our bauhaus aesthetic and captures the essence of the following blog post: ${blogSummary}`,
                 n: 1,
-                size: '1024x1024'
+                size: '1024x576'
             },
             {
                 headers: {
@@ -72,6 +74,7 @@ app.post('/generate-blog', async (req, res) => {
             }
         );
 
+        console.log('DALL-E Response:', dalleResponse.data);
         const imageUrl = dalleResponse.data.data[0].url;
 
         // Prepare data for Webflow CMS
@@ -102,6 +105,7 @@ app.post('/generate-blog', async (req, res) => {
             }
         );
 
+        console.log('Webflow Response:', webflowResponse.data);
         res.status(200).json({ message: 'Blog post generated and added to Webflow CMS successfully', webflowData: webflowResponse.data });
     } catch (error) {
         console.error('Error processing request:', error);
