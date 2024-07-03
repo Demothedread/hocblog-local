@@ -4,7 +4,7 @@
   "description": "A Node.js application to generate blog posts using OpenAI and add them to Webflow CMS",
   "main": "index.js",
   "scripts": {
-    "start": "node  index.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "axios": "^1.7.2",
