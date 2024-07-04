@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const querystring = require('querystring');
+require('dotenv').config();
 
 const app = express();
 
@@ -9,7 +10,7 @@ const CLIENT_SECRET = process.env.WEBFLOW_CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 
 app.get('/auth', (req, res) => {
-    const authUrl = `https://webflow.com/oauth/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&scope=read,write`;
+    const authUrl = `https://webflow.com/oauth/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=assets:read assets:write authorized_user:read cms:read cms:write custom_code:read custom_code:write forms:read forms:write pages:read pages:write sites:read sites:write`;
     res.redirect(authUrl);
 });
 
@@ -26,6 +27,7 @@ app.get('/callback', async (req, res) => {
         }));
 
         const { access_token } = response.data;
+        console.log(`Access Token: ${access_token}`);
         res.send(`Access Token: ${access_token}`);
     } catch (error) {
         console.error('Error getting access token:', error);

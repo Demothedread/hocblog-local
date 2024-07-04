@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const helmet = require('helmet');
+const querystring = require('querystring');
 require('dotenv').config();
 
 const app = express();
@@ -13,6 +14,9 @@ console.log(`Server is running on port ${PORT}`);
 const WEBFLOW_API_URL = `https://api.webflow.com/collections/${process.env.WEBFLOW_COLLECTION_ID}/items`;
 const CHATGPT_API_URL = 'https://api.openai.com/v1/chat/completions';
 const DALLE_API_URL = 'https://api.openai.com/v1/images/generations';
+
+// Retrieve the access token from the environment or a secure location
+const WEBFLOW_ACCESS_TOKEN = process.env.WEBFLOW_ACCESS_TOKEN;
 
 app.disable('x-powered-by');
 
@@ -107,7 +111,7 @@ app.post('/generate-blog', async (req, res) => {
             { fields: cmsData.fields },
             {
                 headers: {
-                    'Authorization': `Bearer ${process.env.WEBFLOW_API_KEY}`,
+                    'Authorization': `Bearer ${WEBFLOW_ACCESS_TOKEN}`,
                     'Content-Type': 'application/json',
                     'accept-version': '1.0.0'
                 }
