@@ -178,17 +178,6 @@ app.post('/generate-blog', async (req, res) => {
         tags: ['example', 'blog', 'post'],  // Add relevant tags here
       }
     };
-    // Prepare data for Webflow CMS
-    const cmsData = {
-      fields: {
-        name: `Blog Post About ${topic}`,
-        slug: `blog-post-about-${topic.toLowerCase().replace(/\s+/g, '-')}`,
-        'post-body': blogContent,
-        'post-summary': blogSummary,
-        'main-image': imageUrl,  // URL of the generated image
-        tags: ['example', 'blog', 'post'],  // Add relevant tags here
-      }
-    };
 
     // Send data to Webflow CMS via API URL
     const webflowResponse = await axios.post(
@@ -216,6 +205,4 @@ app.post('/generate-blog', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  console.log(`Server is running on port ${PORT}`);
 });
-      
