@@ -8,6 +8,13 @@ const cookieParser = require('cookie-parser');
 >>>>>>> df20308 (added it)
 require('dotenv').config();
 
+// index.js
+
+// Require the oauth.js for authentication
+const oauth = require('./oauth');
+
+// Your main application logic here
+const express = require('express');
 const app = express();
 
 app.use(helmet());
