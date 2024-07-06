@@ -4,6 +4,13 @@ const helmet = require('helmet');
 const querystring = require('querystring');
 require('dotenv').config();
 
+// index.js
+
+// Require the oauth.js for authentication
+const oauth = require('./oauth');
+
+// Your main application logic here
+const express = require('express');
 const app = express();
 app.use(express.json());
 app.use(express.static('public'));
