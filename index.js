@@ -43,7 +43,6 @@ app.use((req, res, next) => {
   next();
 });
 
-const PORT = process.env.PORT || 3000;
 const ZAPIER_WEBHOOK_URL = process.dot.env.ZAPIER_WEBHOOK_URL;
 const WEBFLOW_API_URL = `https://api.webflow.com/collections/${process.env.WEBFLOW_COLLECTION_ID}/items`;
 const CHATGPT_API_URL = 'https://api.openai.com/v1/chat/completions';
@@ -53,12 +52,7 @@ const WEBFLOW_ACCESS_TOKEN = process.env.WEBFLOW_ACCESS_TOKEN;
 console.log(`Server is running on port ${PORT}`);
 
 //oath server setup
-const express = require('express');
-const axios = require('axios');
-const querystring = require('querystring');
-require('dotenv').config();
-
-const app = express();
+//====== ZAPIER INCOMING WEBHOOK ========
 
 const CLIENT_ID = process.env.WEBFLOW_CLIENT_ID;
 const CLIENT_SECRET = process.env.WEBFLOW_CLIENT_SECRET;
@@ -86,16 +80,11 @@ app.get('/callback', async (req, res) => {
         const { access_token } = response.data;
         console.log(`Access Token: ${access_token}`);
 
-        res.send(<html><body><h1>Access Token: ${access_token}</h1><p>Ali Baba says Open NOW</p></body></html>);
+        res.send(<html><body><h1>Access Token: ${access_token}</h1><p>Ali Baba says Open</p></body></html>);
     } catch (error) {
         console.error('Error getting access token:', error);
         res.status(500).send('Error getting access token');
     }
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`OAuth server is running on port ${PORT}`);
 });
 
 // main.js (your main application file
