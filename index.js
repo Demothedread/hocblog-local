@@ -6,13 +6,6 @@ const querystring = require('querystring'); // Import querystring for URL encodi
 
 require('dotenv').config();
 
-// index.js
-
-// Require the oauth.js for authentication
-const oauth = require('./oauth');
-
-// Your main application logic here
-const express = require('express');
 const app = express();
 
 // Middleware setup
