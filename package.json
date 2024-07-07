@@ -2,7 +2,7 @@
   "name": "autoblogger",
   "version": "1.0.0",
   "description": "Automated blog post generator",
-  "main": "index.js",                       
+  "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
@@ -13,5 +13,9 @@
     "express": "^4.17.1",
     "helmet": "^4.6.0",
     "querystring": "^0.2.0"
-  }
+  },
+  "devDependencies": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
