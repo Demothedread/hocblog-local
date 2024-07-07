@@ -44,13 +44,66 @@ app.use((req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3000;
-const ZAPIER_WEBHOOK_URL = 'YOUR_ZAPIER_WEBHOOK_URL';
+const ZAPIER_WEBHOOK_URL = process.dot.env.ZAPIER_WEBHOOK_URL;
 const WEBFLOW_API_URL = `https://api.webflow.com/collections/${process.env.WEBFLOW_COLLECTION_ID}/items`;
 const CHATGPT_API_URL = 'https://api.openai.com/v1/chat/completions';
 const DALLE_API_URL = 'https://api.openai.com/v1/images/generations';
 const WEBFLOW_ACCESS_TOKEN = process.env.WEBFLOW_ACCESS_TOKEN;
 
 console.log(`Server is running on port ${PORT}`);
+
+//oath server setup
+const express = require('express');
+const axios = require('axios');
+const querystring = require('querystring');
+require('dotenv').config();
+
+const app = express();
+
+const CLIENT_ID = process.env.WEBFLOW_CLIENT_ID;
+const CLIENT_SECRET = process.env.WEBFLOW_CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
+
+app.use(express.static('public'));
+
+app.get('/auth', (req, res) => {
+    const authUrl = `https://webflow.com/oauth/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=assets:read assets:write authorized_user:read cms:read cms:write custom_code:read custom_code:write forms:read forms:write pages:read pages:write sites:read sites:write`;
+    res.redirect(authUrl);
+});
+
+app.get('/callback', async (req, res) => {
+    const { code } = req.query;
+
+    try {
+        const response = await axios.post('https://api.webflow.com/oauth/access_token', querystring.stringify({
+            client_id: CLIENT_ID,
+            client_secret: CLIENT_SECRET,
+            grant_type: 'authorization_code',
+            code,
+            redirect_uri: REDIRECT_URI
+        }));
+
+        const { access_token } = response.data;
+        console.log(`Access Token: ${access_token}`);
+
+        res.send(<html><body><h1>Access Token: ${access_token}</h1><p>Ali Baba says Open NOW</p></body></html>);
+    } catch (error) {
+        console.error('Error getting access token:', error);
+        res.status(500).send('Error getting access token');
+    }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`OAuth server is running on port ${PORT}`);
+});
+
+// main.js (your main application file
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`OAuth server is running on port ${PORT}`);
+});
 
 app.disable('x-powered-by');
 >>>>>>> df20308 (added it)
