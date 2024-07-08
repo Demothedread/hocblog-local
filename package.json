@@ -1,7 +1,7 @@
 {
   "name": "autoblogger",
   "version": "1.0.0",
-  "description": "Automated blog post generator",
+     "description": "Automated blog post generator",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -12,21 +12,12 @@
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^10.0.0",
-    "express": "^4.19.2",
-    "fetch": "^1.1.0",
-    "glob": "^11.0.0",
-    "helmet": "^5.1.1",
-    "lru-cache": "^11.0.0",
-    "node-fetch": "^2.7.0",
-    "punycode": "^2.3.1",
-    "querystring": "^0.2.1",
-    "webflow-api": "^2.3.2"
+    "express": "^4.17.1",
+    "helmet": "^4.6.0",
+    "querystring": "^0.2.0"
   },
+  "devDependencies": {},
   "keywords": [],
-  "author": "pseudø arepo",
-  "license": "ISC",
-  "devDependencies": {
-    "jest": "^29.7.0",
-    "supertest": "^7.0.0"
-  }
+  "author": "",
+  "license": "ISC"
 }

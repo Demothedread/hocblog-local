@@ -6,10 +6,17 @@ const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
 =======
 >>>>>>> df20308 (added it)
+const fetch = require('node-fetch');
+const helmet = require('helmet'); // Import helmet for middleware setup
+const axios = require('axios'); // Import axios for making HTTP requests
+const querystring = require('querystring'); // Import querystring for URL encoding
+
 require('dotenv').config();
 
 const app = express();
 
+
+// Middleware setup
 app.use(helmet());
 app.use(express.json());
 app.use(express.static('public')); // Serve static files from the public directory
@@ -58,42 +65,63 @@ const CLIENT_ID = process.env.WEBFLOW_CLIENT_ID;
 const CLIENT_SECRET = process.env.WEBFLOW_CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 
+app.use(express.json());
 app.use(express.static('public'));
 
-app.get('/auth', (req, res) => {
-    const authUrl = `https://webflow.com/oauth/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=assets:read assets:write authorized_user:read cms:read cms:write custom_code:read custom_code:write forms:read forms:write pages:read pages:write sites:read sites:write`;
-    res.redirect(authUrl);
+// Environment variables
+const {
+  PORT = 3000,
+  ZAPIER_WEBHOOK_URL,
+  WEBFLOW_COLLECTION_ID,
+  CHATGPT_API_URL = 'https://api.openai.com/v1/chat/completions',
+  DALLE_API_URL = 'https://api.openai.com/v1/images/generations',
+  WEBFLOW_CLIENT_ID,
+  WEBFLOW_CLIENT_SECRET,
+  REDIRECT_URI,
+  CHATGPT_API_KEY
+} = process.env;
+
+const WEBFLOW_API_URL = `https://api.webflow.com/collections/${WEBFLOW_COLLECTION_ID}/items`;
+
+/**
+ * Logs the server's port number.
+ * @param {Number} PORT - The server's port number.
+ */
+function logServerPort(PORT) {
+  console.log(`Server is running on port ${PORT}`);
+}
+
+logServerPort(PORT);
+
+// OAuth server setup
+app.get('/auth', async (req, res) => {
+  const authUrl = `https://webflow.com/oauth/authorize?response_type=code&client_id=${WEBFLOW_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=assets:read assets:write authorized_user:read cms:read cms:write custom_code:read custom_code:write forms:read forms:write pages:read pages:write sites:read sites:write`;
+  res.redirect(authUrl);
 });
 
 app.get('/callback', async (req, res) => {
-    const { code } = req.query;
+  const { code } = req.query;
 
-    try {
-        const response = await axios.post('https://api.webflow.com/oauth/access_token', querystring.stringify({
-            client_id: CLIENT_ID,
-            client_secret: CLIENT_SECRET,
-            grant_type: 'authorization_code',
-            code,
-            redirect_uri: REDIRECT_URI
-        }));
+  try {
+    const response = await axios.post('https://api.webflow.com/oauth/access_token', querystring.stringify({
+      client_id: WEBFLOW_CLIENT_ID,
+      client_secret: WEBFLOW_CLIENT_SECRET,
+      grant_type: 'authorization_code',
+      code,
+      redirect_uri: REDIRECT_URI
+    }));
 
-        const { access_token } = response.data;
-        console.log(`Access Token: ${access_token}`);
+    const { access_token } = response.data;
+    console.log(`Access Token: ${access_token}`);
 
-        res.send(<html><body><h1>Access Token: ${access_token}</h1><p>Ali Baba says Open</p></body></html>);
-    } catch (error) {
-        console.error('Error getting access token:', error);
-        res.status(500).send('Error getting access token');
-    }
+    res.send(`<html><body><h1>Access Token: ${access_token}</h1><p>Ali Baba says Open</p></body></html>`);
+  } catch (error) {
+    console.error('Error getting access token:', error);
+    res.status(500).send('Error getting access token');
+  }
 });
 
-// main.js (your main application file
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`OAuth server is running on port ${PORT}`);
-});
-
+// Disable x-powered-by header for security
 app.disable('x-powered-by');
 >>>>>>> df20308 (added it)
 
@@ -130,6 +158,7 @@ app.post('/webhook', async (req, res) => {
     try {
 <<<<<<< HEAD
       await axios.post(ZAPIER_WEBHOOK_URL, { data: dataToExport });
+      await axios.post(ZAPIER_WEBHOOK_URL, { data: dataToExport });
       res.status(200).send('Data exported successfully.');
 =======
         // Call ChatGPT API to generate blog post
@@ -148,7 +177,43 @@ app.post('/webhook', async (req, res) => {
                 }
             }
         );
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Failed to export data.');
+    }
+  } else {
+    res.status(200).send('No export command found.');
+  }
+});
 
+// Endpoint for generating blog posts
+app.post('/generate-blog', async (req, res) => {
+  const { topic, length, comprehension } = req.body;
+  const prompt = `Generate a blog post about ${topic} with a length of ${length} for an audience with ${comprehension} level of comprehension.`;
+  const { topic, length, comprehension } = req.body;
+  const prompt = `Generate a blog post about ${topic} with a length of ${length} for an audience with ${comprehension} level of comprehension.`;
+
+  try {
+    // Call ChatGPT API to generate blog post
+    const chatGptResponse = await axios.post(
+      CHATGPT_API_URL,
+      {
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'system', content: prompt }],
+        max_tokens: 2050,
+        temperature: 0.5
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${CHATGPT_API_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    console.log('ChatGPT Response:', chatGptResponse.data);
+    const blogContent = chatGptResponse.data.choices[0].message.content;
+    console.log('Generated Blog Content:', blogContent);
     console.log('ChatGPT Response:', chatGptResponse.data);
     const blogContent = chatGptResponse.data.choices[0].message.content;
     console.log('Generated Blog Content:', blogContent);
@@ -165,12 +230,14 @@ app.post('/webhook', async (req, res) => {
       },
       {
         headers: {
-          'Authorization': `Bearer ${process.env.CHATGPT_API_KEY}`,
+          'Authorization': `Bearer ${CHATGPT_API_KEY}`,
           'Content-Type': 'application/json'
         }
       }
     );
 
+    console.log('ChatGPT Summary Response:', summaryResponse.data);
+    const blogSummary = summaryResponse.data.choices[0].message.content;
     console.log('ChatGPT Summary Response:', summaryResponse.data);
     const blogSummary = summaryResponse.data.choices[0].message.content;
 
@@ -200,6 +267,17 @@ app.post('/webhook', async (req, res) => {
       throw new Error('No image generated by DALL-E');
     }
 
+    // Prepare data for Webflow CMS
+    const cmsData = {
+      fields: {
+        name: `Blog Post About ${topic}`,
+        slug: `blog-post-about-${topic.toLowerCase().replace(/\s+/g, '-')}`,
+        'post-body': blogContent,
+        'post-summary': blogSummary,
+        'main-image': imageUrl,  // URL of the generated image
+        tags: ['example', 'blog', 'post'],  // Add relevant tags here
+      }
+    };
     // Prepare data for Webflow CMS
     const cmsData = {
       fields: {
@@ -332,6 +410,8 @@ app.post('/generate-blog', async (req, res) => {
       }
     );
 
+    
+    console.log('Webflow Response:', webflowResponse.data);
     res.status(200).json({ message: 'Blog post generated and added to Webflow CMS successfully', webflowData: webflowResponse.data });
   } catch (error) {
     console.error('Error processing request:', error);
@@ -345,7 +425,9 @@ app.post('/generate-blog', async (req, res) => {
 app.listen(PORT, () => {
 <<<<<<< HEAD
   console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 =======
     console.log(`Server is running on port ${PORT}`);
 >>>>>>> df20308 (added it)
 });
+      
