@@ -1,7 +1,7 @@
 {
   "name": "autoblogger",
   "version": "1.0.0",
-  "description": "Automated blog post generator",
+     "description": "Automated blog post generator",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

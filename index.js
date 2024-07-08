@@ -92,6 +92,8 @@ app.post('/webhook', async (req, res) => {
 app.post('/generate-blog', async (req, res) => {
   const { topic, length, comprehension } = req.body;
   const prompt = `Generate a blog post about ${topic} with a length of ${length} for an audience with ${comprehension} level of comprehension.`;
+  const { topic, length, comprehension } = req.body;
+  const prompt = `Generate a blog post about ${topic} with a length of ${length} for an audience with ${comprehension} level of comprehension.`;
 
   try {
     // Call ChatGPT API to generate blog post
@@ -205,4 +207,6 @@ app.post('/generate-blog', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
+      
