@@ -1,7 +1,7 @@
 {
   "name": "autoblogger",
   "version": "1.0.0",
-  "description": "Automated blog post generator",
+     "description": "Automated blog post generator",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -10,12 +10,13 @@
     "axios": "^1.7.2",
     "body-parser": "^1.19.0",
     "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "helmet": "^4.6.0",
-    "querystring": "^0.2.0"
+    "express": "^4.19.2",
+    "fetch": "^1.1.0",
+    "helmet": "^5.1.1",
+    "querystring": "^0.2.1",
+    "node-fetch": "^2.0.0"  
   },
-  "devDependencies": {},
   "keywords": [],
-  "author": "",
+  "author": "pseudø arepo",
   "license": "ISC"
 }

@@ -6,8 +6,6 @@
     <title>Auto Blog Maker</title>
 </head>
 <body>
-    <p>Click <a href="/auth">here</a> to authenticate with Webflow.</p>
-    <br></br>
     <h1>Generate a Blog Post</h1>
     <form id="blogForm">
         <label for="topic">Write a Blog Post About:</label>
@@ -30,30 +28,16 @@
     <div id="result"></div>
 
     <script>
-        document.getElementById('blogForm').addEventListener('submit', async (event) => {
+        document.getElementById('blogForm').addEventListener('submit', (event) => {
             event.preventDefault();
+            const topic = document.getElementById('topic').value;
+            const length = document.getElementById('length').value;
+            const comprehension = document.getElementById('comprehension').value;
 
-            const formData = {
-                topic: document.getElementById('topic').value,
-                length: document.getElementById('length').value,
-                comprehension: document.getElementById('comprehension').value
-            };
-
-            try {
-                const response = await fetch('/generate-blog', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                const result = await response.json();
-                document.getElementById('result').innerText = result.message || 'Blog post generated and added to Webflow CMS successfully';
-            } catch (error) {
-                document.getElementById('result').innerText = 'Error generating blog post: ' + error.message;
-            }
+            // Redirect to the auth endpoint with the form data as query parameters
+            const authUrl = `/auth?topic=${encodeURIComponent(topic)}&length=${encodeURIComponent(length)}&comprehension=${encodeURIComponent(comprehension)}`;
+            window.location.href = authUrl;
         });
     </script>
 </body>
-</html>
+</html>                  

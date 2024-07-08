@@ -6,5 +6,12 @@
     ],
     "vscode-edge-devtools.browserFlavor": "Default",
     "vscode-edge-devtools.defaultUrl": "https://localhost:8080",
-    "vscode-edge-devtools.showWorkers": true
+    "vscode-edge-devtools.showWorkers": true,
+    "genieai.enableConversationHistory": true,
+    "genieai.promptPrefix.customPrompt1-enabled": true,
+    "genieai.openai.model": "gpt-3.5-turbo-1106",
+    "genieai.openai.organization": "org-skOmOpOeV35fYEr2bPydWPkP",
+    "genieai.openai.temperature": 0.5,
+    "genieai.openai.top_p": 0.9,
+    "genieai.personalizedName": "PPB!TCHKILLA1000000000"
 }
