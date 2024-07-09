@@ -1,11 +1,5 @@
 const express = require('express');
-const helmet = require('helmet');
-<<<<<<< HEAD
-const axios = require('axios');
-const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
-=======
->>>>>>> df20308 (added it)
 const fetch = require('node-fetch');
 const helmet = require('helmet'); // Import helmet for middleware setup
 const axios = require('axios'); // Import axios for making HTTP requests
@@ -432,4 +426,3 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 >>>>>>> df20308 (added it)
 });
-      
