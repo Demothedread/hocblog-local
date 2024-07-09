@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const helmet = require('helmet');
 const axios = require('axios');
 const querystring = require('querystring');
+const cookieParser = require('cookie-parser'); // Add cookie-parser
 require('dotenv').config();
 
 const app = express();
@@ -10,6 +11,7 @@ const app = express();
 app.use(helmet());
 app.use(express.json());
 app.use(express.static('public'));
+app.use(cookieParser()); // Use cookie-parser
 
 const {
   PORT = 3000,
@@ -25,8 +27,10 @@ const {
 
 const WEBFLOW_API_URL = `https://api.webflow.com/collections/${WEBFLOW_COLLECTION_ID}/items`;
 
-app.get('/auth', async (req, res) => {
-  const authUrl = `https://webflow.com/oauth/authorize?response_type=code&client_id=${WEBFLOW_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=assets:read assets:write authorized_user:read cms:read cms:write custom_code:read custom_code:write forms:read forms:write pages:read pages:write sites:read sites:write`;
+// OAuth Routes
+app.get('/auth', (req, res) => {
+  const state = Math.random().toString(36).substring(7); // Generate a random state value for CSRF protection
+  const authUrl = `https://webflow.com/oauth/authorize?client_id=${WEBFLOW_CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&state=${state}`;
   res.redirect(authUrl);
 });
 
@@ -45,15 +49,15 @@ app.get('/callback', async (req, res) => {
     const { access_token } = response.data;
     console.log(`Access Token: ${access_token}`);
 
-    res.send(`<html><body><h1>Access Token: ${access_token}</h1><p>Ali Baba says Open</p></body></html>`);
+    res.cookie('webflow_access_token', access_token, { httpOnly: true });
+    res.redirect('/?authenticated=true');
   } catch (error) {
     console.error('Error getting access token:', error);
     res.status(500).send('Error getting access token');
   }
 });
 
-app.disable('x-powered-by');
-
+// Webhook and Blog Generation Routes
 app.post('/webhook', async (req, res) => {
   const { text } = req.body;
 
@@ -149,12 +153,18 @@ app.post('/generate-blog', async (req, res) => {
       }
     };
 
+    const webflowAccessToken = req.cookies.webflow_access_token;
+
+    if (!webflowAccessToken) {
+      return res.status(401).json({ message: 'User not authenticated' });
+    }
+
     const webflowResponse = await axios.post(
       WEBFLOW_API_URL,
       { fields: cmsData.fields },
       {
         headers: {
-          'Authorization': `Bearer ${WEBFLOW_ACCESS_TOKEN}`,
+          'Authorization': `Bearer ${webflowAccessToken}`,
           'Content-Type': 'application/json',
           'accept-version': '1.0.0'
         }
