@@ -67,6 +67,7 @@ const REDIRECT_URI = process.env.REDIRECT_URI;
 
 app.use(express.json());
 app.use(express.static('public'));
+app.use(cookieParser()); // Use cookie-parser
 
 // Environment variables
 const {
@@ -114,7 +115,8 @@ app.get('/callback', async (req, res) => {
     const { access_token } = response.data;
     console.log(`Access Token: ${access_token}`);
 
-    res.send(`<html><body><h1>Access Token: ${access_token}</h1><p>Ali Baba says Open</p></body></html>`);
+    res.cookie('webflow_access_token', access_token, { httpOnly: true });
+    res.redirect('/?authenticated=true');
   } catch (error) {
     console.error('Error getting access token:', error);
     res.status(500).send('Error getting access token');

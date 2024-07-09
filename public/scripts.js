@@ -6,6 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const formSection = document.getElementById('formSection');
     const authButton = document.getElementById('authButton');
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2883294 (snitches are bishes)
     if (isAuthenticated) {
         authButton.textContent = 'Authenticated!';
         authButton.disabled = true;
@@ -17,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.getElementById('blogForm').addEventListener('submit', (event) => {
+<<<<<<< HEAD
         event.preventDefault();
         const topic = document.getElementById('topic').value;
         const length = document.getElementById('length').value;
@@ -36,4 +41,24 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => console.error('Error:', error));
     });
+=======
+            event.preventDefault();
+            const topic = document.getElementById('topic').value;
+            const length = document.getElementById('length').value;
+            const comprehension = document.getElementById('comprehension').value;
+            
+                fetch('/generate-blog', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ topic, length, comprehension })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').innerText = data.message;
+                })
+                .catch(error => console.error('Error:', error));
+            });
+>>>>>>> 2883294 (snitches are bishes)
 });
