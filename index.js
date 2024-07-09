@@ -318,6 +318,7 @@ app.post('/generate-blog', async (req, res) => {
 });
 
 app.post('/generate-blog', async (req, res) => {
+  // Ensure 'topic' is not declared multiple times
   const { topic, length, comprehension } = req.body;
   const prompt = `Generate a blog post about ${topic} with a length of ${length} for an audience with ${comprehension} level of comprehension.`;
 
