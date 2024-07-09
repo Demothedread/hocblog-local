@@ -184,6 +184,7 @@ app.post('/webhook', async (req, res) => {
 
 // Endpoint for generating blog posts
 app.post('/generate-blog', async (req, res) => {
+  // Ensure 'topic' is not declared multiple times
   const { topic, length, comprehension } = req.body;
   const prompt = `Generate a blog post about ${topic} with a length of ${length} for an audience with ${comprehension} level of comprehension.`;
   const { topic, length, comprehension } = req.body;
