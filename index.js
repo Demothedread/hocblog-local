@@ -1,17 +1,16 @@
 const express = require('express');
-const fetch = require('node-fetch');
 const helmet = require('helmet');
 const axios = require('axios');
 const querystring = require('querystring');
-const cookieParser = require('cookie-parser'); // Add cookie-parser
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const app = express();
 
 app.use(helmet());
 app.use(express.json());
-app.use(express.static('public'));
-app.use(cookieParser()); // Use cookie-parser
+app.use(express.static('public')); // Serve static files from the public directory
+app.use(cookieParser());
 
 const {
   PORT = 3000,
@@ -50,7 +49,7 @@ app.get('/callback', async (req, res) => {
     console.log(`Access Token: ${access_token}`);
 
     res.cookie('webflow_access_token', access_token, { httpOnly: true });
-    res.redirect('/?authenticated=true');
+    res.redirect('/?authenticated=true'); // Redirect to the index.html page with an authenticated flag
   } catch (error) {
     console.error('Error getting access token:', error);
     res.status(500).send('Error getting access token');
@@ -77,7 +76,6 @@ app.post('/webhook', async (req, res) => {
 });
 
 app.post('/generate-blog', async (req, res) => {
-  // Ensure 'topic' is not declared multiple times
   const { topic, length, comprehension } = req.body;
   const prompt = `Generate a blog post about ${topic} with a length of ${length} for an audience with ${comprehension} level of comprehension.`;
 
