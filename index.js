@@ -116,7 +116,7 @@ app.get('/callback', async (req, res) => {
     console.log(`Access Token: ${access_token}`);
 
     res.cookie('webflow_access_token', access_token, { httpOnly: true });
-    res.redirect('/?authenticated=true');
+    res.redirect('/?authenticated=true'); // Redirect to the index.html page with an authenticated flag
   } catch (error) {
     console.error('Error getting access token:', error);
     res.status(500).send('Error getting access token');
@@ -318,7 +318,6 @@ app.post('/generate-blog', async (req, res) => {
 });
 
 app.post('/generate-blog', async (req, res) => {
-  // Ensure 'topic' is not declared multiple times
   const { topic, length, comprehension } = req.body;
   const prompt = `Generate a blog post about ${topic} with a length of ${length} for an audience with ${comprehension} level of comprehension.`;
 

@@ -11,6 +11,7 @@
     "axios": "^1.7.2",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.6",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^10.0.0",
 <<<<<<< HEAD
     "express": "^4.17.1",
@@ -24,8 +25,8 @@
     "lru-cache": "^11.0.0",
     "node-fetch": "^2.7.0",
     "punycode": "^2.3.1",
-    "querystring": "^0.2.1"
->>>>>>> 2883294 (snitches are bishes)
+    "querystring": "^0.2.1",
+    "webflow-api": "^2.3.2"
   },
   "devDependencies": {},
   "keywords": [],
