@@ -2,3 +2,5 @@
 .env
 localserver.js
 oath.js
+archive/
+cheatsheet.txt
