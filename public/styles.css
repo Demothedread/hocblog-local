@@ -1,0 +1,108 @@
+/* styles.css */
+
+body {
+    font-family: "bulletin-typewriter-mn", sans-serif, 'Lucida', 'Gill Sans', Arial;
+    font-weight: 400;
+    font-style: normal;
+    color: sienna;
+    font-size:large;
+    margin: 20px;
+    background-color: #9d9df1;
+}
+
+.banner-title {
+    font-size: 3rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+    background-image: -moz-repeating-linear-gradient(to bottom, rgba(111, 103, 103, 0.853), rgba(167, 139, 55, 0.836));
+  }
+  
+  .banner-title span {
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+    animation-delay: calc(0.2s * var(--index));
+  }
+  
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+  
+
+.banner-title aria-label:nth-child(even){
+    color: rgb(248, 158, 248), 
+}
+
+.banner-title aria-label:nth-child(odd){
+    color: rgb(119, 246, 204);
+}
+
+h1 {
+    color: #333;
+    font-family: 'Lincoln Electric', 'Macula shaded', 'Macula block', Arial, Helvetica, sans-serif;
+    font:regular;
+    text-decoration-style: wavy;
+    text-decoration-color: rgb(191, 244, 131);
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-image: linear-gradient(to center, #a4cde0, #f0f0f0);
+    color: rgb(52, 52, 52);
+    font-size: 16px;
+    font-weight: bold;
+    border: rgb(255, 148, 98);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+form section {
+    display: none; /* Fixed the selector */
+}
+
+form section.active {
+    display: block; /* Added dot before "active" */
+}
+
+form {
+    margin: 20px auto;
+    max-width: 500px;
+    padding: 20px;
+    background-color: rgb(143, 149, 148);
+    border-radius: 10px;
+    box-shadow: 0 3 10px rgba(226, 110, 110, 0.337);
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font: "patriot";
+    font-weight: bold;
+    color:#333
+}
+
+form input, form select {
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#result {
+    margin-top: 15px;
+    padding: 10px;
+    border: 2px solid #ccc;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
