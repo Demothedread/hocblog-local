@@ -11,13 +11,8 @@
     "axios": "^1.7.2",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.6",
-    "cookie-parser": "^1.4.6",
     "dotenv": "^10.0.0",
-<<<<<<< HEAD
-    "express": "^4.17.1",
-    "helmet": "^4.6.0",
-    "querystring": "^0.2.0"
-=======
+    "querystring": "^0.2.0",
     "express": "^4.19.2",
     "fetch": "^1.1.0",
     "glob": "^11.0.0",
@@ -25,20 +20,13 @@
     "lru-cache": "^11.0.0",
     "node-fetch": "^2.7.0",
     "punycode": "^2.3.1",
-    "querystring": "^0.2.1",
     "webflow-api": "^2.3.2"
   },
-  "devDependencies": {},
-  "keywords": [],
-<<<<<<< HEAD
-  "author": "",
-  "license": "ISC"
-=======
-  "author": "pseudø arepo",
-  "license": "ISC",
-  "devDependencies": {
-    "jest": "^29.7.0",
-    "supertest": "^7.0.0"
+   "keywords": [],
+   "author": "pseudø arepo",
+   "license": "ISC",
+   "devDependencies": {
+     "jest": "^29.7.0",
+     "supertest": "^7.0.0"
   }
->>>>>>> 2883294 (snitches are bishes)
 }
