@@ -3,19 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Autoblogger</title>
-    <link rel="stylesheet" href="https://use.typekit.net/yvq3jwv.css">
+    <title>Auto Blog Maker</title>
     <link rel="stylesheet" href="/styles.css">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
-<body> 
-  <div class="banner-title" aria-label="AUTOBLOGGER">A<span>A</span>U<span>U</span>T<span>T</span>O<span>O</span>B<span>B</span>L<span>L</span>O<span>O</span>G<span>G</span>G<span>G</span>E<span>E</span>R<span>R</span></div>
-  <div class="content">
+<body>
     <h1>Generate a Blog Post</h1>
     <div id="authSection">
         <button id="authButton">Authenticate</button>
     </div>
-    <div id="form Section">
+    <div id="formSection" style="display: none;">
         <form id="blogForm">
             <label for="topic">Write a Blog Post About:</label>
             <input type="text" id="topic" name="topic" required><br><br>
@@ -30,15 +26,6 @@
                 <option value="College Graduate">College Graduate</option>
                 <option value="Industry Professional">Industry Professional</option>
                 <option value="Experts Only">Experts Only</option>
-            </select><br><br>
-
-            <label for="tone">Tone:</label>
-            <select id="tone" name="tone" required>
-                <option value="casual chit-chat">Casual Chit-Chat</option>
-                <option value="personal testimony">Personal Testimony</option>
-                <option value="authoritatively informative">Authoritatively Informative</option>
-                <option value="passionately persuasive">Passionately Persuasive</option>
-                <option value="subversively post-structural">Subversively Post-Structural</option>
             </select><br><br>
 
             <button type="submit">Generate</button>
