@@ -22,13 +22,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const topic = document.getElementById('topic').value;
         const length = document.getElementById('length').value;
         const comprehension = document.getElementById('comprehension').value;
+        const tone = document.getElementById('tone').value;
 
         fetch('/generate-blog', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ topic, length, comprehension })
+            body: JSON.stringify({ topic, length, comprehension, tone })
         })
         .then(response => response.json())
         .then(data => {
