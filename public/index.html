@@ -19,10 +19,9 @@
         <form id="blogForm">
             <label for="topic">Write a Blog Post About:</label>
             <input type="text" id="topic" name="topic" required><br><br>
-
             <label for="length">Length:</label>
             <input type="text" id="length" name="length" required><br><br>
-
+    
             <label for="comprehension">Audience Comprehension:</label>
             <select id="comprehension" name="comprehension" required>
                 <option value="Explain Like I'm 5">Explain Like I'm 5</option>
@@ -31,7 +30,7 @@
                 <option value="Industry Professional">Industry Professional</option>
                 <option value="Experts Only">Experts Only</option>
             </select><br><br>
-
+    
             <label for="tone">Tone:</label>
             <select id="tone" name="tone" required>
                 <option value="casual chit-chat">Casual Chit-Chat</option>
@@ -41,6 +40,14 @@
                 <option value="subversively post-structural">Subversively Post-Structural</option>
             </select><br><br>
 
+            <label for="contentDestination">Content Destination:</label>
+            <select id="contentDestination" name="contentDestination" required>
+                <option value="Twitter">Twitter</option>
+                <option value="Webflow">Webflow</option>
+                <option value="WordPress">WordPress</option>
+                <option value="Instagram">Instagram</option>
+            </select><br><br>
+    
             <button type="submit">Generate</button>
         </form>
         <div id="result"></div>
@@ -48,3 +55,4 @@
     <script src="/scripts.js"></script>
 </body>
 </html>
+```

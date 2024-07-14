@@ -1,7 +1,5 @@
 const express = require('express');
-const { AuthorizationCode } = require('simple-oauth2');
 const axios = require('axios');
-const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 require('dotenv').config();
@@ -14,47 +12,82 @@ app.use(cookieParser());
 
 const {
   PORT = 3000,
-  ZAPIER_WEBHOOK_URL,
   WEBFLOW_API_TOKEN,
-  WEBFLOW_COLLECTION_ID,
+  WEBFLOW_SITE_ID,
   CHATGPT_API_URL = 'https://api.openai.com/v1/chat/completions',
   DALLE_API_URL = 'https://api.openai.com/v1/images/generations',
   WEBFLOW_CLIENT_ID,
   WEBFLOW_CLIENT_SECRET,
+  REDIRECT_URI,
   CHATGPT_API_KEY,
-  ACCESS_TOKEN,
-  SERVER_HOST
+  ACCESS_TOKEN
 } = process.env;
 
 const WEBFLOW_API_URL = `https://api.webflow.com/collections/${WEBFLOW_COLLECTION_ID}/items`;
-const REDIRECT_URI = `${SERVER_HOST}/callback`;
 
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  next();
+});
 
-  app.get('/auth', (req, res) => {
-      const authorizationUri = oauth2.authorizeURL({
-        redirect_uri: REDIRECT_URI,
-        scope: 'all',
-        state: Math.random().toString(36).substring(7)
-      });
+app.get('/auth', (req, res) => {
+  try {
+    const state = Math.random().toString(36).substring(7);
+    const authorizationUri = `https://webflow.com/oauth/authorize?response_type=code&client_id=${WEBFLOW_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=all&state=${state}`;
+
+    console.log('Redirecting to:', authorizationUri);
     res.redirect(authorizationUri);
-  });
-  app.get('/callback', async (req, res) => {
-    const { code } = req.query;
-    const options = {
+  } catch (error) {
+    console.error('Error constructing authorization URL:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/callback', async (req, res) => {
+  const { code } = req.query;
+  const options = {
+    code,
+    redirect_uri: REDIRECT_URI,
+  };
+
+  try {
+    const accessToken = await axios.post('https://api.webflow.com/oauth/access_token', {
+      client_id: WEBFLOW_CLIENT_ID,
+      client_secret: WEBFLOW_CLIENT_SECRET,
       code,
       redirect_uri: REDIRECT_URI,
-    };
-  
-    try {
-      const accessToken = await oauth2.getToken(options);
-      console.log('Access Token received:', accessToken.token.access_token);
-      res.cookie('webflow_access_token', accessToken.token.access_token, { httpOnly: true });
-      res.redirect('/?authenticated=true');
-    } catch (error) {
-      console.error('Access Token Error:', error.message);
-      res.status(500).json('Authentication failed');
-    }
-  });
+    });
+
+    console.log('Access Token received:', accessToken.data.access_token);
+    res.cookie('webflow_access_token', accessToken.data.access_token, { httpOnly: true });
+    res.redirect('/?authenticated=true');
+  } catch (error) {
+    console.error('Access Token Error:', error.message);
+    res.status(500).json('Authentication failed');
+  }
+});
+
+app.post('/create-webhook', async (req, res) => {
+  const { event, url } = req.body;
+
+  try {
+    const response = await axios.post(`https://api.webflow.com/sites/${WEBFLOW_SITE_ID}/webhooks`, {
+      triggerType: event,
+      url,
+    }, {
+      headers: {
+        'Authorization': `Bearer ${WEBFLOW_API_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    console.log('Webhook created:', response.data);
+    res.status(200).json({ message: 'Webhook created successfully', webhook: response.data });
+  } catch (error) {
+    console.error('Error creating webhook:', error);
+    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+  }
+});
 
 app.post('/generate-blog', async (req, res) => {
   const { topic, length, comprehension, tone } = req.body;
@@ -140,7 +173,7 @@ app.post('/generate-blog', async (req, res) => {
       }
     };
 
-    const webflowAccessToken = req.cookies.webflow_access_token || ACCESS_TOKEN;
+    const webflowAccessToken = req.cookies.webflow_access_token || process.env.ACCESS_TOKEN;
 
     if (!webflowAccessToken) {
       console.error('User not authenticated');
@@ -148,13 +181,12 @@ app.post('/generate-blog', async (req, res) => {
     }
 
     // Send data to Webflow CMS via API URL
-    
     const webflowResponse = await axios.post(
       WEBFLOW_API_URL,
       { fields: cmsData.fields },
       {
         headers: {
-          'Authorization': `Bearer ${webflowAccessToken}`,
+          'Authorization': 'Bearer 34926062b8b482e1d863f6477b2b7ecc8165fc68c4e0ffcc8225f41091f72c35',
           'Content-Type': 'application/json',
           'accept-version': '1.0.0'
         }
@@ -164,8 +196,11 @@ app.post('/generate-blog', async (req, res) => {
     console.log('Webflow Response:', webflowResponse.data);
     res.status(200).json({ message: 'Blog post generated and added to Webflow CMS successfully', webflowData: webflowResponse.data });
 
-    // Trigger the webhook after the blog post is created
-    await axios.post(`${SERVER_ENDPOINT}/webhook-handler`, webflowResponse.data);
+    // Call Webhook after generating the blog post
+    await axios.post('your-webhook-url', {
+      event: 'BlogPostGenerated',
+      data: webflowResponse.data,
+    });
 
   } catch (error) {
     console.error('Error processing request:', error);
@@ -174,43 +209,8 @@ app.post('/generate-blog', async (req, res) => {
     }
     res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
-    const cmsData = {
-      fields: {
-        name: `Blog Post About ${topic}`,
-        slug: `blog-post-about-${topic.toLowerCase().replace(/\s+/g, '-')}`,
-        'post-body': blogContent,
-        'post-summary': blogSummary,
-        'main-image': imageUrl,
-        tags: ['example', 'blog', 'post'],
-      }
-    };
+});
 
-    const webflowAccessToken = req.cookies.webflow_access_token || ACCESS_TOKEN;
-
-    if (!webflowAccessToken) {
-      return res.status(401).json({ message: 'User not authenticated' });
-    }
-try {
-    const webflowResponse = await axios.post(
-      WEBFLOW_API_URL,
-      { fields: cmsData.fields },
-      {
-        headers: {
-          'Authorization': `Bearer ${webflowAccessToken}`,
-          'Content-Type': 'application/json',
-          'accept-version': '1.0.0'
-        }
-      });
-   res.status(200).json({ message: 'Blog post generated and added to Webflow CMS successfully', webflowData: webflowResponse.data });    
-    } catch (error) {
-    console.error('Error processing request:', error);
-      if (error.response) {
-      console.error('Error Response Data:', error.response.data);
-       }
-    res.status(500).json({ message: 'Internal Server Error', error: error.message });
-  }
-
-    app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-  });
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

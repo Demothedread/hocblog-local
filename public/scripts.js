@@ -1,38 +1,41 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Check if the user is authenticated by looking for the access token
   const webflowAccessToken = getCookie('webflow_access_token');
+
   const authSection = document.getElementById('authSection');
   const formSection = document.getElementById('formSection');
   const authLink = document.getElementById('authLink');
 
   if (webflowAccessToken) {
-    const authMessage = document.createElement('p');
-    authMessage.textContent = 'Webflow side has been authenticated';
-    authSection.appendChild(authMessage);
-    authLink.style.display = 'none';
-    formSection.style.display = 'block';
+      const authMessage = document.createElement('p');
+      authMessage.textContent = 'Webflow side has been authenticated';
+      authSection.appendChild(authMessage);
+      authLink.style.display = 'none';
+      formSection.style.display = 'block';
   }
 
   document.getElementById('blogForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
+      event.preventDefault();
 
-    const topic = document.getElementById('topic').value;
-    const length = document.getElementById('length').value;
-    const comprehension = document.getElementById('comprehension').value;
-    const tone = document.getElementById('tone').value;
+      const topic = document.getElementById('topic').value;
+      const length = document.getElementById('length').value;
+      const comprehension = document.getElementById('comprehension').value;
+      const tone = document.getElementById('tone').value;
+      const contentDestination = document.getElementById('contentDestination').value;
 
-    try {
-      const response = await fetch('/generate-blog', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ topic, length, comprehension, tone })
-      });
-      const data = await response.json();
-      document.getElementById('result').innerText = data.message;
-    } catch (error) {
-      console.error('Error:', error);
-    }
+      try {
+          const response = await fetch('/generate-blog', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ topic, length, comprehension, tone, contentDestination })
+          });
+          const data = await response.json();
+          document.getElementById('result').innerText = data.message;
+      } catch (error) {
+          console.error('Error:', error);
+      }
   });
 });
 
