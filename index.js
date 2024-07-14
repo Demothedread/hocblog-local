@@ -21,7 +21,7 @@ const {
   WEBFLOW_CLIENT_SECRET,
   REDIRECT_URI,
   CHATGPT_API_KEY,
-  ACCESS_TOKEN
+  ACCESS_TOKEN // Environment variable for direct access
 } = process.env;
 
 const WEBFLOW_API_URL = `https://api.webflow.com/collections/${WEBFLOW_COLLECTION_ID}/items`;
@@ -45,17 +45,20 @@ const oauth2 = new AuthorizationCode({
 });
 
 app.get('/auth', (req, res) => {
-  const state = Math.random().toString(36).substring(7);
-  const authorizationUri = oauth2.authorizeURL({
-    redirect_uri: encodeURIComponent(REDIRECT_URI),
-    client_id: WEBFLOW_CLIENT_ID,
-    scope: 'all',
-    state
-  });
-  console.log('Redirect URI:', redirect_uri),
+  try {
+    const state = Math.random().toString(36).substring(7);
+    const authorizationUri = oauth2.authorizeURL({
+      redirect_uri: REDIRECT_URI,
+      scope: 'all',
+      state,
+    });
 
-  console.log('Redirecting to:', authorizationUri);
-  res.redirect(authorizationUri);
+    console.log('Redirecting to:', authorizationUri);
+    res.redirect(authorizationUri);
+  } catch (error) {
+    console.error('Error constructing authorization URL:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 app.get('/callback', async (req, res) => {
