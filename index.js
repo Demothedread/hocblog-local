@@ -3,7 +3,6 @@ const { AuthorizationCode } = require('simple-oauth2');
 const axios = require('axios');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
-const querystring = require('querystring');
 require('dotenv').config();
 
 const app = express();
@@ -22,7 +21,7 @@ const {
   WEBFLOW_CLIENT_SECRET,
   REDIRECT_URI,
   CHATGPT_API_KEY,
-  ACCESS_TOKEN // New environment variable
+  ACCESS_TOKEN
 } = process.env;
 
 const WEBFLOW_API_URL = `https://api.webflow.com/collections/${WEBFLOW_COLLECTION_ID}/items`;
@@ -46,10 +45,11 @@ const oauth2 = new AuthorizationCode({
 });
 
 app.get('/auth', (req, res) => {
+  const state = Math.random().toString(36).substring(7);
   const authorizationUri = oauth2.authorizeURL({
-    redirect_uri: REDIRECT_URI,
+    redirect_uri: encodeURIComponent(REDIRECT_URI),
     scope: 'all',
-    state: Math.random().toString(36).substring(7),
+    state,
   });
 
   console.log('Redirecting to:', authorizationUri);
