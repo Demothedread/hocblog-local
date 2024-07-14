@@ -210,7 +210,8 @@ try {
     res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
 
-    app.listen(PORT, () => {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
   });
 });
