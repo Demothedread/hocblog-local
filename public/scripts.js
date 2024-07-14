@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Check if the user is authenticated by looking for the access token
-  const webflowAccessToken = getCookie('webflow_access_token');
-
+  // Check if the user is authenticated by looking for the access token
+  const webflowAccessToken = process.env.ACCESS_TOKEN || getCookie('webflow_access_token');
   const authSection = document.getElementById('authSection');
   const formSection = document.getElementById('formSection');
   const authLink = document.getElementById('authLink');

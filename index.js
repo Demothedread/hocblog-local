@@ -48,9 +48,11 @@ app.get('/auth', (req, res) => {
   const state = Math.random().toString(36).substring(7);
   const authorizationUri = oauth2.authorizeURL({
     redirect_uri: encodeURIComponent(REDIRECT_URI),
+    client_id: WEBFLOW_CLIENT_ID,
     scope: 'all',
-    state,
+    state
   });
+  console.log('Redirect URI:', redirect_uri),
 
   console.log('Redirecting to:', authorizationUri);
   res.redirect(authorizationUri);
