@@ -21,7 +21,8 @@ const {
   WEBFLOW_CLIENT_ID,
   WEBFLOW_CLIENT_SECRET,
   REDIRECT_URI,
-  CHATGPT_API_KEY
+  CHATGPT_API_KEY,
+  ACCESS_TOKEN // New environment variable
 } = process.env;
 
 const WEBFLOW_API_URL = `https://api.webflow.com/collections/${WEBFLOW_COLLECTION_ID}/items`;
@@ -66,7 +67,7 @@ app.get('/callback', async (req, res) => {
     const accessToken = await oauth2.getToken(options);
     console.log('Access Token received:', accessToken.token.access_token);
     res.cookie('webflow_access_token', accessToken.token.access_token, { httpOnly: true });
-    res.redirect('/dashboard');
+    res.redirect('/?authenticated=true');
   } catch (error) {
     console.error('Access Token Error:', error.message);
     res.status(500).json('Authentication failed');
@@ -74,7 +75,7 @@ app.get('/callback', async (req, res) => {
 });
 
 app.get('/dashboard', (req, res) => {
-  const token = req.cookies.webflow_access_token;
+  const token = req.cookies.webflow_access_token || ACCESS_TOKEN;
   if (!token) {
     return res.redirect('/auth');
   }
@@ -187,7 +188,7 @@ app.post('/generate-blog', async (req, res) => {
       }
     };
 
-    const webflowAccessToken = req.cookies.webflow_access_token;
+    const webflowAccessToken = req.cookies.webflow_access_token || ACCESS_TOKEN;
 
     if (!webflowAccessToken) {
       console.error('User not authenticated');

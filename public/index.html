@@ -15,7 +15,7 @@
     <div id="authSection">
         <a id="authLink" href="/auth">Authenticate</a>
     </div>
-    <div id="form Section">
+    <div id="formSection" style="display: none;">
         <form id="blogForm">
             <label for="topic">Write a Blog Post About:</label>
             <input type="text" id="topic" name="topic" required><br><br>
@@ -46,17 +46,5 @@
         <div id="result"></div>
     </div>
     <script src="/scripts.js"></script>
-    <script>
-        // Check for access token and display authentication message
-        window.onload = function() {
-            const webflowAccessToken = process.env.ACCESS_TOKEN(); // Implement this function to retrieve access token from cookie
-
-            if (webflowAccessToken) {
-                const authSection = document.getElementById('authSection');
-                const authMessage = document.createElement('p');
-                authMessage.textContent = 'Webflow side has been authenticated';
-                authSection.appendChild(authMessage);
-            }
-        };
-    </script>
 </body>
+</html>
