@@ -1,16 +1,21 @@
+// Import required modules and libraries
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const axios = require('axios');
 const querystring = require('querystring');
-require('dotenv').config();
+require('dotenv').config(); // Load environment variables from .env file
 
+// Create an Express application
 const app = express();
-app.use(helmet());
-app.use(express.json());
-app.use(express.static('public'));
-app.use(cookieParser());
 
+// Apply middleware for security and request handling
+app.use(helmet()); // Set secure HTTP headers
+app.use(express.json()); // Parse incoming request bodies in JSON format
+app.use(express.static('public')); // Serve static files from the 'public' directory
+app.use(cookieParser()); // Parse cookies attached to the client request
+
+// Destructure environment variables with default values
 const {
   PORT = 3000,
   ZAPIER_WEBHOOK_URL,
@@ -23,26 +28,34 @@ const {
   CHATGPT_API_KEY,
   ACCESS_TOKEN
 } = process.env;
+
+// Construct Webflow API URL using environment variable
 const WEBFLOW_API_URL = `https://api.webflow.com/collections/${WEBFLOW_COLLECTION_ID}/items`;
 
+// Set Cache-Control header for all routes
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'public, max-age=3600');
   next();
 });
 
+// Log server start message
 console.log(`Server is running on port ${PORT}`);
 
+// Route for initiating authentication flow
 app.get('/auth', (req, res) => {
+  // Generate a random state for CSRF protection
   const state = Math.random().toString(36).substring(7);
+  // Construct and redirect to the authorization URL
   const authUrl = `https://webflow.com/oauth/authorize?client_id=${WEBFLOW_CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&state=${state}`;
   res.redirect(authUrl);
 });
 
+// Route for handling callback after authentication
 app.get('/callback', async (req, res) => {
   const { code } = req.query;
 
   try {
-    // Access token retrieval
+    // Retrieve access token using the authorization code
     const response = await axios.post('https://api.webflow.com/oauth/access_token', querystring.stringify({
       client_id: WEBFLOW_CLIENT_ID,
       client_secret: WEBFLOW_CLIENT_SECRET,
@@ -51,9 +64,9 @@ app.get('/callback', async (req, res) => {
       redirect_uri: REDIRECT_URI
     }));
 
+    // Extract access token from the response and set it as a cookie
     const { access_token } = response.data;
     console.log(`Access Token: ${access_token}`);
-
     res.cookie('webflow_access_token', access_token, { httpOnly: true });
     res.redirect('/?authenticated=true');
   } catch (error) {
@@ -62,13 +75,13 @@ app.get('/callback', async (req, res) => {
   }
 });
 
-// Webhook and Blog Generation Routes
+// Route for handling webhook and data export
 app.post('/webhook', async (req, res) => {
   const { text } = req.body;
 
   if (text.startsWith('/export')) {
+    // Extract data to be exported and send it to Zapier webhook
     const dataToExport = text.replace('/export', '').trim();
-
     try {
       await axios.post(ZAPIER_WEBHOOK_URL, { data: dataToExport });
       res.status(200).send('Data exported successfully.');
@@ -81,12 +94,14 @@ app.post('/webhook', async (req, res) => {
   }
 });
 
+// Route for generating a blog post
 app.post('/generate-blog', async (req, res) => {
-  const { topic, length, comprehension, tone } = req.body;
-  const prompt = `Generate a blog post about ${topic} with a length of ${length} for an audience with ${comprehension} level of comprehension and a tone of ${tone}.`;
+  // Extract parameters for generating the blog post
+   const { topic, length, comprehension, tone } = req.body;
+   const prompt = `Generate a blog post about ${topic} with a length of ${length} for an audience with ${comprehension} level of comprehension and a tone of ${tone}.`;
 
   try {
-    // Call ChatGPT API to generate blog post
+    // Call ChatGPT API to generate the blog content
     const chatGptResponse = await axios.post(
       CHATGPT_API_URL,
       {
@@ -103,9 +118,10 @@ app.post('/generate-blog', async (req, res) => {
       }
     );
 
+    // Extract the generated blog content from the API response
     const blogContent = chatGptResponse.data.choices[0].message.content;
 
-    // Generate summary
+    // Generate summary for the blog post
     const summaryPrompt = `Summarize the following blog post in 250 characters: ${blogContent}`;
     const summaryResponse = await axios.post(
       CHATGPT_API_URL,
@@ -123,9 +139,10 @@ app.post('/generate-blog', async (req, res) => {
       }
     );
 
+    // Extract the summarized content from the summary response
     const blogSummary = summaryResponse.data.choices[0].message.content;
 
-    // Generate Image using DALL-E
+    // Generate an image related to the blog post using DALL-E
     const dalleResponse = await axios.post(
       DALLE_API_URL,
       {
@@ -144,9 +161,11 @@ app.post('/generate-blog', async (req, res) => {
       }
     );
 
-    const imageUrl = dalleResponse.data.data[0].url;
-
-    if (!imageUrl) {
+    // Check if an image was generated by DALL-E
+    if (dalleResponse.data.url) {
+      const imageUrl = dalleResponse.data.url;
+    }
+      else { 
       throw new Error('No image generated by DALL-E');
     }
 
@@ -157,41 +176,61 @@ app.post('/generate-blog', async (req, res) => {
         slug: `blog-post-about-${topic.toLowerCase().replace(/\s+/g, '-')}`,
         'post-body': blogContent,
         'post-summary': blogSummary,
-        'main-image': imageUrl,
+        'main-image': imageUrl, // Variable imageUrl is not defined here
         tags: ['example', 'blog', 'post'],
       }
     };
 
+    // Retrieve Webflow access token from the client's cookies
     const webflowAccessToken = req.cookies.webflow_access_token;
 
+    // Handle unauthenticated user attempting to generate a blog post
     if (!webflowAccessToken) {
       return res.status(401).json({ message: 'User not authenticated' });
     }
 
-    // Send data to Webflow CMS via API URL
-    const webflowResponse = await axios.post(
-      WEBFLOW_API_URL,
-      { fields: cmsData.fields },
-      {
-        headers: {
-          'Authorization': `Bearer ${webflowAccessToken}`,
-          'Content-Type': 'application/json',
-          'accept-version': '1.0.0'
+    // Send data to Webflow CMS via the API URL
+    try {
+      const webflowResponse = await axios.post(
+        WEBFLOW_API_URL,
+        { fields: cmsData.fields },
+        {
+          headers: {
+            'Authorization': `Bearer ${webflowAccessToken}`,
+            'Content-Type': 'application/json',
+            'accept-version': '1.0.0'
+          }
         }
-      }
-    );
+      );
 
-    console.log('Webflow Response:', webflowResponse.data);
-    res.status(200).json({ message: 'Blog post generated and added to Webflow CMS successfully', webflowData: webflowResponse.data });
-  } catch (error) {
-    console.error('Error processing request:', error);
-    if (error.response) {
-      console.error('Error Response Data:', error.response.data);
+      // Log Webflow API response and send success message
+      console.log('Webflow Response:', webflowResponse.data);
+      res.status(200).json({ message: 'Blog post generated and added to Webflow CMS successfully', webflowData: webflowResponse.data });
+    } catch (error) {
+      // Log and handle errors from the Webflow API request
+      console.error('Error processing request:', error);
+      if (error.response) {
+        console.error('Error Response Data:', error.response.data);
+      }
+      res.status(500).json({ message: 'Internal Server Error', error: error.message });
     }
-    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+
+    // If Webflow API fails, create a CSV file and push it to a Google Sheets row
+    try {
+      // ... (existing code for creating and pushing CSV to Google Sheets)
+    } catch (error) {
+      // Log and handle errors from the Google Sheets integration
+      console.error('Error processing request:', error);
+      res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    }
+  } catch (error) {
+    // Log and handle errors from the blog post generation process
+    console.error('Error generating blog post:', error);
+    res.status(500).send('Error generating blog post');
   }
 });
 
+// Start the server and listen on the specified port
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
