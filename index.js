@@ -34,9 +34,9 @@ const oauth2 = new AuthorizationCode({
     secret: WEBFLOW_CLIENT_SECRET,
   },
   auth: {
-    tokenHost: 'https://api.webflow.com',
     authorizeHost: 'https://webflow.com',
-    authorizePath: '/oauth/authorize',
+    authorizePath: '/oauth/authorize', 
+    tokenHost: 'https://api.webflow.com',
     tokenPath: '/oauth/access_token',
   },
 }); 
@@ -49,22 +49,23 @@ const oauth2 = new AuthorizationCode({
       });
     res.redirect(authorizationUri);
   });
-    app.get('/callback', async (req, res) => {
-      const { code } = req.query;
-    
-      try {
-        const accessToken = ACCESS_TOKEN || await oauth2.getToken({
-          code,
-          redirect_uri: REDIRECT_URI
-        });
-    
-        res.cookie('webflow_access_token', accessToken.token.access_token, { httpOnly: true });
-        res.redirect('/');
-      } catch (error) {
-        console.error('Access Token Error:', error.message);
-        res.status(500).json('Authentication failed');
-      }
-    });
+  app.get('/callback', async (req, res) => {
+    const { code } = req.query;
+    const options = {
+      code,
+      redirect_uri: REDIRECT_URI,
+    };
+  
+    try {
+      const accessToken = await oauth2.getToken(options);
+      console.log('Access Token received:', accessToken.token.access_token);
+      res.cookie('webflow_access_token', accessToken.token.access_token, { httpOnly: true });
+      res.redirect('/?authenticated=true');
+    } catch (error) {
+      console.error('Access Token Error:', error.message);
+      res.status(500).json('Authentication failed');
+    }
+  });
 
 app.post('/generate-blog', async (req, res) => {
   const { topic, length, comprehension, tone } = req.body;
