@@ -213,15 +213,14 @@ app.post('/generate-blog', async (req, res) => {
         console.error('Error Response Data:', error.response.data);
       }
       res.status(500).json({ message: 'Internal Server Error', error: error.message });
-    }
 
-    // If Webflow API fails, create a CSV file and push it to a Google Sheets row
-    try {
-      // ... (existing code for creating and pushing CSV to Google Sheets)
-    } catch (error) {
-      // Log and handle errors from the Google Sheets integration
-      console.error('Error processing request:', error);
-      res.status(500).json({ message: 'Internal Server Error', error: error.message });
+      // Log data to console if Webflow API fails
+      console.log('Blog Data:', {
+        topic,
+        blogContent,
+        blogSummary,
+        imageUrl
+      });
     }
   } catch (error) {
     // Log and handle errors from the blog post generation process
