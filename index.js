@@ -39,40 +39,32 @@ const oauth2 = new AuthorizationCode({
     authorizePath: '/oauth/authorize',
     tokenPath: '/oauth/access_token',
   },
-});
+}); 
 
-app.get('/auth', (req, res) => {
-  try {
-    const state = Math.random().toString(36).substring(7);
-    const authorizationUri = oauth2.authorizeURL({
-      redirect_uri: REDIRECT_URI,
-      scope: 'all',
-      state,
-    });
-
+  app.get('/auth', (req, res) => {
+      const authorizationUri = oauth2.authorizeURL({
+        redirect_uri: REDIRECT_URI,
+        scope: 'all',
+        state: Math.random().toString(36).substring(7)
+      });
     res.redirect(authorizationUri);
-  } catch (error) {
-    console.error('Error constructing authorization URL:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-app.get('/callback', async (req, res) => {
-  const { code } = req.query;
-  const options = {
-    code,
-    redirect_uri: REDIRECT_URI,
-  };
-
-  try {
-    const accessToken = await oauth2.getToken(options);
-    res.cookie('webflow_access_token', accessToken.token.access_token, { httpOnly: true });
-    res.redirect('/?authenticated=true');
-  } catch (error) {
-    console.error('Access Token Error:', error.message);
-    res.status(500).json('Authentication failed');
-  }
-});
+  });
+    app.get('/callback', async (req, res) => {
+      const { code } = req.query;
+    
+      try {
+        const accessToken = ACCESS_TOKEN || await oauth2.getToken({
+          code,
+          redirect_uri: REDIRECT_URI
+        });
+    
+        res.cookie('webflow_access_token', accessToken.token.access_token, { httpOnly: true });
+        res.redirect('/');
+      } catch (error) {
+        console.error('Access Token Error:', error.message);
+        res.status(500).json('Authentication failed');
+      }
+    });
 
 app.post('/generate-blog', async (req, res) => {
   const { topic, length, comprehension, tone } = req.body;
