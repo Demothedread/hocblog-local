@@ -172,7 +172,7 @@ app.post('/webhook', async (req, res) => {
             }
           };
       
-          const webflowAccessToken = req.cookies.webflow_access_token;
+          const webflowAccessToken = process.env.ACCESS_TOKEN;
       
           if (!webflowAccessToken) {
             return res.status(401).json({ message: 'User not authenticated' });

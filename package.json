@@ -12,7 +12,6 @@
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^10.0.0",
-    "querystring": "^0.2.0",
     "express": "^4.19.2",
     "fetch": "^1.1.0",
     "glob": "^11.0.0",
@@ -20,13 +19,14 @@
     "lru-cache": "^11.0.0",
     "node-fetch": "^2.7.0",
     "punycode": "^2.3.1",
-    "webflow-api": "^2.3.2"
+    "querystring": "^0.2.0",
+    "webflow-api": "^2.3.5"
   },
-   "keywords": [],
-   "author": "pseudø arepo",
-   "license": "ISC",
-   "devDependencies": {
-     "jest": "^29.7.0",
-     "supertest": "^7.0.0"
+  "keywords": [],
+  "author": "pseudø arepo",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
   }
 }
