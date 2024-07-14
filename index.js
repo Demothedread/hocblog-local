@@ -1,6 +1,7 @@
 const express = require('express');
 const { AuthorizationCode } = require('simple-oauth2');
 const axios = require('axios');
+const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 require('dotenv').config();
@@ -19,17 +20,47 @@ const {
   DALLE_API_URL = 'https://api.openai.com/v1/images/generations',
   WEBFLOW_CLIENT_ID,
   WEBFLOW_CLIENT_SECRET,
-  REDIRECT_URI,
   CHATGPT_API_KEY,
   ACCESS_TOKEN // Environment variable for direct access
 } = process.env;
 
 const WEBFLOW_API_URL = `https://api.webflow.com/collections/${WEBFLOW_COLLECTION_ID}/items`;
+const REDIRECT_URI = `${process.env.SERVER_HOST}/callback`;
 
+app.get('/auth', (req, res) => {
+  const authorizationUrl = `https://webflow.com/oauth/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+  res.redirect(authorizationUrl);
+});
+
+app.get('/callback', async (req, res) => {
+  const { code } = req.query;
+
+  try {
+    const response = await axios.post('https://api.webflow.com/oauth/access_token', querystring.stringify({
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
+      code: code,
+      grant_type: 'authorization_code',
+      redirect_uri: REDIRECT_URI
+    }));
+
+    const { access_token } = response.data;
+    res.redirect(`/success?access_token=${access_token}`);
+  } catch (error) {
+    console.error(error);
+    res.send('Error authenticating');
+  }
+});
+
+app.get('/success', (req, res) => {
+  const { access_token } = req.query;
+  res.send(`Access Token: ${access_token}`);
+});
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'public, max-age=3600');
   next();
 });
+
 
 const oauth2 = new AuthorizationCode({
   client: {
@@ -78,15 +109,22 @@ app.get('/callback', async (req, res) => {
     res.status(500).json('Authentication failed');
   }
 });
+app.get('/list-sites', async (req, res) => {
+  const accessToken = req.query.access_token;
 
-app.get('/dashboard', (req, res) => {
-  const token = req.cookies.webflow_access_token || ACCESS_TOKEN;
-  if (!token) {
-    return res.redirect('/auth');
+  try {
+    const response = await axios.get('https://api.webflow.com/sites', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Accept-Version': '1.0.0'
+      }
+    });
+
+    res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    res.send('Error fetching sites');
   }
-
-  console.log('Authenticated with token:', token);
-  res.send('Authenticated! You can now interact with Webflow API.');
 });
 
 // Webhook and Blog Generation Routes
