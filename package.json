@@ -30,5 +30,16 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "supertest": "^7.0.0"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Demothedread/hocblog-local.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Demothedread/hocblog-local/issues"
+  },
+  "homepage": "https://github.com/Demothedread/hocblog-local#readme"
 }
