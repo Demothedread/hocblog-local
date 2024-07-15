@@ -2,9 +2,9 @@
   "name": "autoblogger",
   "version": "1.0.0",
   "description": "Automated blog post generator",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node server.js",
     "test": "jest",
     "supertest": "node index.supertest.js"
   },
@@ -13,6 +13,7 @@
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^10.0.0",
+    "doxx": "^2.1.1",
     "express": "^4.19.2",
     "fetch": "^1.1.0",
     "glob": "^11.0.0",

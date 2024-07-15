@@ -3,6 +3,8 @@ const { AuthorizationCode } = require('simple-oauth2');
 const axios = require('axios');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
+const { Document, Packer, Paragraph, TextRun } = require('docx');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
@@ -203,6 +205,9 @@ app.post('/generate-blog', async (req, res) => {
       case 'Instagram':
         await postToInstagram(blogSummary, imageUrl);
         break;
+      case 'Word':
+        await exportToWord(cmsData);
+        break;
       default:
         throw new Error('Unsupported content destination');
     }
@@ -275,6 +280,54 @@ const postToInstagram = async (content, imageUrl) => {
   );
 
   console.log('Instagram Response:', response.data);
+};
+
+const exportToWord = async (cmsData) => {
+  const doc = new Document();
+  doc.addSection({
+    children: [
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: cmsData.name,
+            bold: true,
+            size: 32,
+          }),
+        ],
+      }),
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: cmsData['post-summary'],
+            italics: true,
+            size: 24,
+          }),
+        ],
+      }),
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: cmsData['post-body'],
+            size: 24,
+          }),
+        ],
+      }),
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: `Image URL: ${cmsData['main-image']}`,
+            size: 24,
+            color: 'blue',
+          }),
+        ],
+      }),
+    ],
+  });
+
+  const buffer = await Packer.toBuffer(doc);
+  fs.writeFileSync('BlogPost.docx', buffer);
+
+  console.log('Word document created successfully');
 };
 
 app.listen(PORT, () => {
