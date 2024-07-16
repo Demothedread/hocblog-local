@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const { Document, Packer, Paragraph, TextRun } = require('docx');
 const fs = require('fs');
+const sqlite3 = require('sqlite3').verbose();
 require('dotenv').config();
 
 const app = express();
@@ -35,6 +36,38 @@ const {
 } = process.env;
 
 const WEBFLOW_API_URL = `https://api.webflow.com/collections/${WEBFLOW_COLLECTION_ID}/items`;
+
+// Initialize SQLite database
+const db = new sqlite3.Database('./logs.db', (err) => {
+  if (err) {
+    console.error('Could not connect to database', err);
+  } else {
+    console.log('Connected to database');
+  }
+});
+
+// Create table for logging
+db.run(`CREATE TABLE IF NOT EXISTS logs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  timestamp TEXT,
+  topic TEXT,
+  summary TEXT,
+  endpoint TEXT,
+  link TEXT,
+  additional_info TEXT
+)`);
+
+const logCall = (topic, summary, endpoint, link, additional_info) => {
+  const timestamp = new Date().toISOString();
+  db.run(`INSERT INTO logs (timestamp, topic, summary, endpoint, link, additional_info) VALUES (?, ?, ?, ?, ?, ?)`, 
+    [timestamp, topic, summary, endpoint, link, additional_info], (err) => {
+      if (err) {
+        console.error('Error logging call', err);
+      } else {
+        console.log('Call logged successfully');
+      }
+  });
+};
 
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'public, max-age=3600');
@@ -192,25 +225,33 @@ app.post('/generate-blog', async (req, res) => {
       tags: ['example', 'blog', 'post']
     };
 
+    let link = '';
     switch (contentDestination) {
       case 'Twitter':
         await postToTwitter(blogSummary);
+        link = 'Twitter URL';
         break;
       case 'Webflow':
         await postToWebflow(cmsData);
+        link = 'Webflow URL';
         break;
       case 'WordPress':
         await postToWordPress(cmsData);
+        link = 'WordPress URL';
         break;
       case 'Instagram':
         await postToInstagram(blogSummary, imageUrl);
+        link = 'Instagram URL';
         break;
       case 'Word':
-        await exportToWord(cmsData);
+        link = await exportToWord(cmsData);
         break;
       default:
         throw new Error('Unsupported content destination');
     }
+
+    // Log the call
+    logCall(topic, blogSummary, contentDestination, link, JSON.stringify(cmsData));
 
     res.status(200).json({ message: `Content generated and posted to ${contentDestination} successfully` });
   } catch (error) {
@@ -325,10 +366,23 @@ const exportToWord = async (cmsData) => {
   });
 
   const buffer = await Packer.toBuffer(doc);
-  fs.writeFileSync('BlogPost.docx', buffer);
+  const filePath = `./BlogPost_${Date.now()}.docx`;
+  fs.writeFileSync(filePath, buffer);
 
   console.log('Word document created successfully');
+  return filePath;
 };
+
+app.get('/logs', (req, res) => {
+  db.all('SELECT * FROM logs ORDER BY timestamp DESC', [], (err, rows) => {
+    if (err) {
+      console.error('Error retrieving logs', err);
+      res.status(500).json({ message: 'Internal Server Error' });
+    } else {
+      res.status(200).json(rows);
+    }
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

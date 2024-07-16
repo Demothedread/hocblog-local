@@ -1,6 +1,8 @@
 # .gitignore
-.env
+*.env
 localserver.js
 oath.js
-archive/
+archive/*
 cheatsheet.txt
+doc/*.txt
+server.js 

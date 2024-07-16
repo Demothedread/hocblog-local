@@ -1,0 +1,36 @@
+hocblog.com/automaker  (Webflow Frontend)
+|
+|-- index.html
+|    |-- Form
+|    |    |-- Input: Topic
+|    |    |-- Input: Length
+|    |    |-- Input: Comprehension Level
+|    |    |-- Input: Tone
+|    |    |-- Dropdown: Content Destination (Blog, Tweet, Instagram Post, Word Document)
+|    |    |-- Button: Submit
+|    |
+|    |-- JavaScript (Embedded or Linked)
+|         |-- Handle form submission
+|         |-- Send POST request to Heroku backend based on content destination
+|
+Heroku Backend
+|
+|-- server.js
+|    |-- Endpoint: /generate-blog
+|    |-- Endpoint: /generate-tweet
+|    |-- Endpoint: /generate-post (Instagram)
+|    |-- Endpoint: /generate-doc (Microsoft Word)
+|    |-- Function: logCall (Logs request details in SQLite)
+|    |-- Function: generateBlog (Interacts with ChatGPT API and Webflow API)
+|    |-- Function: generateTweet (Interacts with ChatGPT API and Twitter API)
+|    |-- Function: generatePost (Interacts with ChatGPT API and Instagram API)
+|    |-- Function: generateDoc (Interacts with ChatGPT API and generates Word Document)
+|
+|-- logs.db (SQLite Database)
+|    |-- Table: logs
+|         |-- Columns: id, timestamp, topic, summary, endpoint, link, additional_info
+|
+public
+|
+|-- styles.css (Optional CSS for custom styling)
+|-- favicon.ico
