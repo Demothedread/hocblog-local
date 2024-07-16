@@ -91,7 +91,7 @@ app.get('/auth', (req, res) => {
   try {
     const state = Math.random().toString(36).substring(7);
     const authorizationUri = oauth2.authorizeURL({
-      redirect_uri: REDIRECT_URI,
+      redirect_uri: `${REDIRECT_URI}/callback`,
       scope: 'all',
       state,
     });
@@ -108,7 +108,7 @@ app.get('/callback', async (req, res) => {
   const { code } = req.query;
   const options = {
     code,
-    redirect_uri: REDIRECT_URI,
+    redirect_uri: `${REDIRECT_URI}/callback`,
   };
 
   try {
@@ -261,7 +261,22 @@ app.post('/generate-blog', async (req, res) => {
 });
 
 const postToTwitter = async (content) => {
-  // Implement posting to Twitter using Twitter API
+  const Twitter = require('twitter');
+
+  const client = new Twitter({
+    consumer_key: TWITTER_API_KEY,
+    consumer_secret: TWITTER_API_SECRET,
+    access_token_key: TWITTER_ACCESS_TOKEN,
+    access_token_secret: TWITTER_ACCESS_TOKEN_SECRET,
+  });
+
+  try {
+    const tweet = await client.post('statuses/update', { status: content });
+    console.log('Tweet posted successfully:', tweet);
+  } catch (error) {
+    console.error('Error posting to Twitter:', error);
+    throw error;
+  }
 };
 
 const postToWebflow = async (cmsData) => {
