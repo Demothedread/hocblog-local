@@ -5,7 +5,6 @@ const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const { Document, Packer, Paragraph, TextRun } = require('docx');
 const fs = require('fs');
-const sqlite3 = require('sqlite3').verbose();
 require('dotenv').config();
 
 const app = express();
@@ -15,14 +14,14 @@ app.use(express.static('public'));
 app.use(cookieParser());
 
 const {
-  PORT = 3000,
+  PORT=3000,
   ZAPIER_WEBHOOK_URL,
   WEBFLOW_COLLECTION_ID,
   CHATGPT_API_URL = 'https://api.openai.com/v1/chat/completions',
   DALLE_API_URL = 'https://api.openai.com/v1/images/generations',
   WEBFLOW_CLIENT_ID,
   WEBFLOW_CLIENT_SECRET,
-  REDIRECT_URI,
+  REDIRECT_URI = 'https://hocblog-f5e15700baff.herokuapp.com/',
   CHATGPT_API_KEY,
   ACCESS_TOKEN,
   TWITTER_API_KEY,
@@ -36,38 +35,6 @@ const {
 } = process.env;
 
 const WEBFLOW_API_URL = `https://api.webflow.com/collections/${WEBFLOW_COLLECTION_ID}/items`;
-
-// Initialize SQLite database
-const db = new sqlite3.Database('./logs.db', (err) => {
-  if (err) {
-    console.error('Could not connect to database', err);
-  } else {
-    console.log('Connected to database');
-  }
-});
-
-// Create table for logging
-db.run(`CREATE TABLE IF NOT EXISTS logs (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  timestamp TEXT,
-  topic TEXT,
-  summary TEXT,
-  endpoint TEXT,
-  link TEXT,
-  additional_info TEXT
-)`);
-
-const logCall = (topic, summary, endpoint, link, additional_info) => {
-  const timestamp = new Date().toISOString();
-  db.run(`INSERT INTO logs (timestamp, topic, summary, endpoint, link, additional_info) VALUES (?, ?, ?, ?, ?, ?)`, 
-    [timestamp, topic, summary, endpoint, link, additional_info], (err) => {
-      if (err) {
-        console.error('Error logging call', err);
-      } else {
-        console.log('Call logged successfully');
-      }
-  });
-};
 
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'public, max-age=3600');
@@ -91,7 +58,7 @@ app.get('/auth', (req, res) => {
   try {
     const state = Math.random().toString(36).substring(7);
     const authorizationUri = oauth2.authorizeURL({
-      redirect_uri: `${REDIRECT_URI}/callback`,
+      redirect_uri: REDIRECT_URI,
       scope: 'all',
       state,
     });
@@ -108,7 +75,7 @@ app.get('/callback', async (req, res) => {
   const { code } = req.query;
   const options = {
     code,
-    redirect_uri: `${REDIRECT_URI}/callback`,
+    redirect_uri: REDIRECT_URI,
   };
 
   try {
@@ -225,33 +192,25 @@ app.post('/generate-blog', async (req, res) => {
       tags: ['example', 'blog', 'post']
     };
 
-    let link = '';
     switch (contentDestination) {
       case 'Twitter':
         await postToTwitter(blogSummary);
-        link = 'Twitter URL';
         break;
       case 'Webflow':
         await postToWebflow(cmsData);
-        link = 'Webflow URL';
         break;
       case 'WordPress':
         await postToWordPress(cmsData);
-        link = 'WordPress URL';
         break;
       case 'Instagram':
         await postToInstagram(blogSummary, imageUrl);
-        link = 'Instagram URL';
         break;
       case 'Word':
-        link = await exportToWord(cmsData);
+        await exportToWord(cmsData);
         break;
       default:
         throw new Error('Unsupported content destination');
     }
-
-    // Log the call
-    logCall(topic, blogSummary, contentDestination, link, JSON.stringify(cmsData));
 
     res.status(200).json({ message: `Content generated and posted to ${contentDestination} successfully` });
   } catch (error) {
@@ -261,22 +220,7 @@ app.post('/generate-blog', async (req, res) => {
 });
 
 const postToTwitter = async (content) => {
-  const Twitter = require('twitter');
-
-  const client = new Twitter({
-    consumer_key: TWITTER_API_KEY,
-    consumer_secret: TWITTER_API_SECRET,
-    access_token_key: TWITTER_ACCESS_TOKEN,
-    access_token_secret: TWITTER_ACCESS_TOKEN_SECRET,
-  });
-
-  try {
-    const tweet = await client.post('statuses/update', { status: content });
-    console.log('Tweet posted successfully:', tweet);
-  } catch (error) {
-    console.error('Error posting to Twitter:', error);
-    throw error;
-  }
+  // Implement posting to Twitter using Twitter API
 };
 
 const postToWebflow = async (cmsData) => {
@@ -381,23 +325,10 @@ const exportToWord = async (cmsData) => {
   });
 
   const buffer = await Packer.toBuffer(doc);
-  const filePath = `./BlogPost_${Date.now()}.docx`;
-  fs.writeFileSync(filePath, buffer);
+  fs.writeFileSync('BlogPost.docx', buffer);
 
   console.log('Word document created successfully');
-  return filePath;
 };
-
-app.get('/logs', (req, res) => {
-  db.all('SELECT * FROM logs ORDER BY timestamp DESC', [], (err, rows) => {
-    if (err) {
-      console.error('Error retrieving logs', err);
-      res.status(500).json({ message: 'Internal Server Error' });
-    } else {
-      res.status(200).json(rows);
-    }
-  });
-});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

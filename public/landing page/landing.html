@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hocomnia - Landing Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="#">Hocomnia</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#otto">OTTO</a></li>
+                <li><a href="#past-projects">Past Projects</a></li>
+                <li><a href="#blog">A Few Too Many</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+            </ul><br></br>
+           
+    </nav>
+    <header class="hero">
+        <div class="container">
+            <h1>Welcome to Hocomnia</h1>
+            <p>Your one-stop solution for innovative projects and creative endeavors.</p>
+            <br></br>
+            <a href="auth" class="btn">Discover Now</a>
+        </div>
+    </header>
+    <main>
+        <section id="otto" class="section">
+            <div class="container">
+                <h2>OTTO</h2>
+                <p>Explore the innovative features of our OTTO tool.</p>
+            </div>
+        </section>
+        <section id="past-projects" class="section">
+            <div class="container">
+                <h2>Past Projects</h2>
+                <p>Take a look at some of our successful past projects.</p>
+            </div>
+        </section>
+        <section id="blog" class="section">
+            <div class="container">
+                <h2>A Few Too Many</h2>
+                <p>Read our latest blog posts and updates.</p>
+            </div>
+        </section>
+        <section id="about" class="section">
+            <div class="container">
+                <h2>About</h2>
+                <p>Learn more about our mission and values.</p>
+            </div>
+        </section>
+        <section id="gallery" class="section">
+            <div class="container">
+                <h2>Gallery</h2>
+                <p>Browse through our gallery of projects and events.</p>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Hocomnia. All rights reserved.</p>
+        </div>
+    </footer>
+    <script 
+    document.addEventListener('DOMContentLoaded', () => {
+        // Check if the user is authenticated by looking for the access token
+        const webflowAccessToken = getCookie('webflow_access_token');
+    
+        const authLink = document.getElementById('authLink');
+    
+        if (webflowAccessToken) {
+            authLink.textContent = 'Authenticated';
+            authLink.href = '#';
+            authLink.classList.add('authenticated');
+        }
+    
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+    };    
+    </script>
+</body>
+<style>
+    body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.navbar {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .logo a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.navbar .nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.navbar .nav-links li {
+    margin-left: 20px;
+}
+
+.navbar .nav-links a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.auth-btn {
+    background-color: #ff5722;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.hero {
+    background: url('hero.jpg') no-repeat center center/cover;
+    color: #fff;
+    height: 60vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 48px;
+}
+
+.hero p {
+    font-size: 24px;
+}
+
+.section {
+    padding: 60px 0;
+    text-align: center;
+}
+
+.footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+}
+
+</style>
+</html> 

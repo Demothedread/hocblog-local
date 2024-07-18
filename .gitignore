@@ -6,3 +6,6 @@ archive/*
 cheatsheet.txt
 doc/*.txt
 server.js 
+extra/*
+node_modules/
+landingpage.html 
