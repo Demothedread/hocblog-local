@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   
       try {
-        const response = await fetch(`https://your-heroku-app.herokuapp.com/${endpoint}`, {
+        const response = await fetch(`https://hocblog-f5e15700baff.herokuapp.com'/${endpoint}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
