@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> <!-- Ensure the lang attribute is present -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +13,7 @@
     <div class="content">
         <h1>Generate a Blog Post</h1>
         <div id="authSection">
-            <a id="authLink" href="/auth">Authenticate</a>
+            <a id="authLink" href="https://hocblog-f5e15700baff.herokuapp.com/auth">Authenticate</a>
         </div>
         <div id="formSection" style="display: none;">
             <form id="blogForm">
@@ -36,13 +36,6 @@
                     <option value="authoritatively informative">Authoritatively Informative</option>
                     <option value="passionately persuasive">Passionately Persuasive</option>
                     <option value="subversively post-structural">Subversively Post-Structural</option>
-                </select><br><br>
-                <label for="contentDestination">Content Destination:</label>
-                <select id="contentDestination" name="contentDestination" required>
-                    <option value="Twitter">Twitter</option>
-                    <option value="Webflow">Webflow</option>
-                    <option value="WordPress">WordPress</option>
-                    <option value="Instagram">Instagram</option>
                 </select><br><br>
                 <button type="submit">Generate</button>
             </form>

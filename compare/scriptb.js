@@ -149,7 +149,7 @@ app.post('/generate-blog', async (req, res) => {
       slug: `blog-post-about-${topic.toLowerCase().replace(/\s+/g, '-')}`,
       'post-body': blogContent,
       'post-summary': blogSummary,
-      'main-image': imageUrl, // Replace with actual image URL if available
+      'main-image': 'default-image-url', // Replace with actual image URL if available
       tags: ['example', 'blog', 'post']
     };
 

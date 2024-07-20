@@ -19,7 +19,7 @@ body {
   }
   
   .banner-title span {
-    animation: fadeInOut 4s infinite alternate;
+    animation: fadeInOut cubic-bezier(0.86, 0, 0.07, 1) infinite alternate;
   }
   
   @keyframes fadeInOut {
@@ -75,7 +75,7 @@ button:disabled {
 }
 
 form section {
-    display: none; /* Fixed the selector */
+    display: block; /* Fixed the selector */
 }
 
 form section.active {

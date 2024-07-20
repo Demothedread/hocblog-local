@@ -8,3 +8,4 @@ doc/*.txt
 server.js 
 extra/*
 landingpage.html 
+compare/*
