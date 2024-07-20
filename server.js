@@ -3,8 +3,6 @@ const { AuthorizationCode } = require('simple-oauth2');
 const axios = require('axios');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
-const { Document, Packer, Paragraph, TextRun } = require('docx');
-const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
@@ -14,32 +12,19 @@ app.use(express.static('public'));
 app.use(cookieParser());
 
 const {
-  PORT=3000,
-  ZAPIER_WEBHOOK_URL,
+  PORT = 3000,
   WEBFLOW_COLLECTION_ID,
   CHATGPT_API_URL = 'https://api.openai.com/v1/chat/completions',
   DALLE_API_URL = 'https://api.openai.com/v1/images/generations',
   WEBFLOW_CLIENT_ID,
   WEBFLOW_CLIENT_SECRET,
-  REDIRECT_URI = 'https://hocblog-f5e15700baff.herokuapp.com/',
+  REDIRECT_URI = 'https://hocblog-f5e15700baff.herokuapp.com/callback',
   CHATGPT_API_KEY,
   ACCESS_TOKEN,
-  TWITTER_API_KEY,
-  TWITTER_API_SECRET,
-  TWITTER_ACCESS_TOKEN,
-  TWITTER_ACCESS_TOKEN_SECRET,
-  WORDPRESS_API_URL,
-  WORDPRESS_API_TOKEN,
-  INSTAGRAM_API_URL,
-  INSTAGRAM_ACCESS_TOKEN
+  WEBFLOW_API_TOKEN
 } = process.env;
 
 const WEBFLOW_API_URL = `https://api.webflow.com/collections/${WEBFLOW_COLLECTION_ID}/items`;
-
-app.use((req, res, next) => {
-  res.setHeader('Cache-Control', 'public, max-age=3600');
-  next();
-});
 
 const oauth2 = new AuthorizationCode({
   client: {
@@ -55,20 +40,14 @@ const oauth2 = new AuthorizationCode({
 });
 
 app.get('/auth', (req, res) => {
-  try {
-    const state = Math.random().toString(36).substring(7);
-    const authorizationUri = oauth2.authorizeURL({
-      redirect_uri: REDIRECT_URI,
-      scope: 'all',
-      state,
-    });
-
-    console.log('Redirecting to:', authorizationUri);
-    res.redirect(authorizationUri);
-  } catch (error) {
-    console.error('Error constructing authorization URL:', error);
-    res.status(500).send('Internal Server Error');
-  }
+  const state = Math.random().toString(36).substring(7);
+  const authorizationUri = oauth2.authorizeURL({
+    redirect_uri: REDIRECT_URI,
+    scope: 'all',
+    state,
+  });
+  console.log('Redirecting to:', authorizationUri);
+  res.redirect(authorizationUri);
 });
 
 app.get('/callback', async (req, res) => {
@@ -79,35 +58,23 @@ app.get('/callback', async (req, res) => {
   };
 
   try {
-    const accessToken = await oauth2.getToken(options);
-    console.log('Access Token received:', accessToken.token.access_token);
-    res.cookie('webflow_access_token', accessToken.token.access_token, { httpOnly: true });
+    // Check if the access token already exists
+    let accessToken = req.cookies.webflow_access_token || ACCESS_TOKEN;
+
+    if (!accessToken) {
+      // Generate a new access token if none exists
+      const result = await oauth2.getToken(options);
+      accessToken = result.token.access_token;
+      console.log('Access Token received:', accessToken);
+      res.cookie('webflow_access_token', accessToken, { httpOnly: true });
+    } else {
+      console.log('Using existing access token');
+    }
+
     res.redirect('/?authenticated=true');
   } catch (error) {
     console.error('Access Token Error:', error.message);
-    res.status(500).json('Authentication failed');
-  }
-});
-
-app.post('/create-webhook', async (req, res) => {
-  const { event, url } = req.body;
-
-  try {
-    const response = await axios.post(`https://api.webflow.com/sites/${WEBFLOW_SITE_ID}/webhooks`, {
-      triggerType: event,
-      url,
-    }, {
-      headers: {
-        'Authorization': `Bearer ${WEBFLOW_API_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    console.log('Webhook created:', response.data);
-    res.status(200).json({ message: 'Webhook created successfully', webhook: response.data });
-  } catch (error) {
-    console.error('Error creating webhook:', error);
-    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    res.status(500).json('Authentication failed due to Access Token Error');
   }
 });
 
@@ -116,7 +83,6 @@ app.post('/generate-blog', async (req, res) => {
   const prompt = `Generate a blog post about ${topic} with a length of ${length} for an audience with ${comprehension} level of comprehension and a tone of ${tone}.`;
 
   try {
-    // Call ChatGPT API to generate blog post
     const chatGptResponse = await axios.post(
       CHATGPT_API_URL,
       {
@@ -136,7 +102,6 @@ app.post('/generate-blog', async (req, res) => {
     const blogContent = chatGptResponse.data.choices[0].message.content;
     console.log('Blog content generated:', blogContent);
 
-    // Generate summary
     const summaryPrompt = `Summarize the following blog post in 250 characters: ${blogContent}`;
     const summaryResponse = await axios.post(
       CHATGPT_API_URL,
@@ -157,7 +122,6 @@ app.post('/generate-blog', async (req, res) => {
     const blogSummary = summaryResponse.data.choices[0].message.content;
     console.log('Blog summary generated:', blogSummary);
 
-    // Generate Image using DALL-E
     const dalleResponse = await axios.post(
       DALLE_API_URL,
       {
@@ -192,143 +156,32 @@ app.post('/generate-blog', async (req, res) => {
       tags: ['example', 'blog', 'post']
     };
 
-    switch (contentDestination) {
-      case 'Twitter':
-        await postToTwitter(blogSummary);
-        break;
-      case 'Webflow':
-        await postToWebflow(cmsData);
-        break;
-      case 'WordPress':
-        await postToWordPress(cmsData);
-        break;
-      case 'Instagram':
-        await postToInstagram(blogSummary, imageUrl);
-        break;
-      case 'Word':
-        await exportToWord(cmsData);
-        break;
-      default:
-        throw new Error('Unsupported content destination');
+    const webflowAccessToken = req.cookies.webflow_access_token || ACCESS_TOKEN;
+
+    if (!webflowAccessToken) {
+      console.error('User not authenticated');
+      return res.status(401).json({ message: 'User not authenticated' });
     }
 
-    res.status(200).json({ message: `Content generated and posted to ${contentDestination} successfully` });
+    const webflowResponse = await axios.post(
+      WEBFLOW_API_URL,
+      { fields: cmsData },
+      {
+        headers: {
+          'Authorization': `Bearer ${webflowAccessToken}`,
+          'Content-Type': 'application/json',
+          'accept-version': '1.0.0'
+        }
+      }
+    );
+
+    console.log('Webflow Response:', webflowResponse.data);
+    res.status(200).json({ message: 'Blog post generated and added to Webflow CMS successfully', webflowData: webflowResponse.data });
   } catch (error) {
     console.error('Error processing request:', error);
     res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
 });
-
-const postToTwitter = async (content) => {
-  // Implement posting to Twitter using Twitter API
-};
-
-const postToWebflow = async (cmsData) => {
-  const webflowAccessToken = req.cookies.webflow_access_token || ACCESS_TOKEN;
-
-  if (!webflowAccessToken) {
-    throw new Error('User not authenticated');
-  }
-
-  const webflowResponse = await axios.post(
-    WEBFLOW_API_URL,
-    { fields: cmsData },
-    {
-      headers: {
-        'Authorization': `Bearer ${webflowAccessToken}`,
-        'Content-Type': 'application/json',
-        'accept-version': '1.0.0'
-      }
-    }
-  );
-
-  console.log('Webflow Response:', webflowResponse.data);
-};
-
-const postToWordPress = async (cmsData) => {
-  const response = await axios.post(
-    WORDPRESS_API_URL,
-    {
-      title: cmsData.name,
-      content: cmsData['post-body'],
-      status: 'publish'
-    },
-    {
-      headers: {
-        'Authorization': `Bearer ${WORDPRESS_API_TOKEN}`,
-        'Content-Type': 'application/json'
-      }
-    }
-  );
-
-  console.log('WordPress Response:', response.data);
-};
-
-const postToInstagram = async (content, imageUrl) => {
-  const response = await axios.post(
-    INSTAGRAM_API_URL,
-    {
-      caption: content,
-      image_url: imageUrl
-    },
-    {
-      headers: {
-        'Authorization': `Bearer ${INSTAGRAM_ACCESS_TOKEN}`,
-        'Content-Type': 'application/json'
-      }
-    }
-  );
-
-  console.log('Instagram Response:', response.data);
-};
-
-const exportToWord = async (cmsData) => {
-  const doc = new Document();
-  doc.addSection({
-    children: [
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: cmsData.name,
-            bold: true,
-            size: 32,
-          }),
-        ],
-      }),
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: cmsData['post-summary'],
-            italics: true,
-            size: 24,
-          }),
-        ],
-      }),
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: cmsData['post-body'],
-            size: 24,
-          }),
-        ],
-      }),
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: `Image URL: ${cmsData['main-image']}`,
-            size: 24,
-            color: 'blue',
-          }),
-        ],
-      }),
-    ],
-  });
-
-  const buffer = await Packer.toBuffer(doc);
-  fs.writeFileSync('BlogPost.docx', buffer);
-
-  console.log('Word document created successfully');
-};
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

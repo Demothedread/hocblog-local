@@ -7,5 +7,4 @@ cheatsheet.txt
 doc/*.txt
 server.js 
 extra/*
-node_modules/
 public/landingpage.html
