@@ -18,12 +18,12 @@ const {
   DALLE_API_URL = 'https://api.openai.com/v1/images/generations',
   WEBFLOW_CLIENT_ID,
   WEBFLOW_CLIENT_SECRET,
-  REDIRECT_URI = 'https://hocblog-f5e15700baff.herokuapp.com',
+  REDIRECT_URI,
   CHATGPT_API_KEY,
   WEBFLOW_API_TOKEN
 } = process.env;
 
-const WEBFLOW_API_URL = `https://api.webflow.com/collections/${WEBFLOW_COLLECTION_ID}/items`;
+const WEBFLOW_API_URL = `https://api.webflow.com/v2/collections/${WEBFLOW_COLLECTION_ID}/items`;
 
 const oauth2 = new AuthorizationCode({
   client: {
@@ -149,15 +149,17 @@ app.post('/generate-blog', async (req, res) => {
       slug: `blog-post-about-${topic.toLowerCase().replace(/\s+/g, '-')}`,
       'post-body': blogContent,
       'post-summary': blogSummary,
-      'main-image': imageUrl, // Replace with actual image URL if available
-      tags: ['example', 'blog', 'post']
+      'main-image': imageUrl,
+      tags: ['example', 'blog', 'post'],
+      isArchived: false,
+      isDraft: false
     };
 
     const webflowAccessToken = req.cookies.webflow_access_token || WEBFLOW_API_TOKEN;
 
     if (!webflowAccessToken) {
       console.error('User not authenticated');
-      return res.status(401).json({ message: 'User not authenticated' });
+      return res.status(401).json({ message: 'User not authenticated due to lack of access token' });
     }
 
     const webflowResponse = await axios.post(
