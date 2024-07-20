@@ -18,7 +18,7 @@ const {
   DALLE_API_URL = 'https://api.openai.com/v1/images/generations',
   WEBFLOW_CLIENT_ID,
   WEBFLOW_CLIENT_SECRET,
-  REDIRECT_URI = 'https://hocblog-f5e15700baff.herokuapp.com/callback',
+  REDIRECT_URI = 'https://hocblog-f5e15700baff.herokuapp.com',
   CHATGPT_API_KEY,
   WEBFLOW_API_TOKEN
 } = process.env;
