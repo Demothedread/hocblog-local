@@ -5,7 +5,8 @@ oath.js
 archive/*
 cheatsheet.txt
 doc/*.txt
-server.js 
 extra/*
 landingpage.html 
 compare/*
+public/landingpage/*
+_config.yml 
