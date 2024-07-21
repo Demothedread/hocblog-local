@@ -1,52 +1,31 @@
 {
   "name": "autoblogger",
+  "description": "A boilerplate to quickly get started with Webflow Apps",
+  "author": {
+    "name": "Your Name",
+    "email": "your.email@example.com"
+  },
   "version": "1.0.0",
-  "description": "Automated blog post generator",
   "main": "server.js",
+  "type": "module",
+  "license": "MIT",
   "scripts": {
-    "start": "node server.js",
-    "test": "jest",
-    "supertest": "node index.supertest.js"
+    "dev": "nodemon -r dotenv/config server.js"
   },
   "dependencies": {
+    "@fastify/static": "^6.5.0",
     "axios": "^1.7.2",
-    "body-parser": "^1.19.0",
-    "cookie-parser": "^1.4.6",
-    "docx": "^8.5.0",
-    "dotenv": "^10.0.0",
-    "doxx": "^2.1.1",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.0.2",
     "express": "^4.19.2",
-    "fetch": "^1.1.0",
-    "glob": "^11.0.0",
-    "googleapis": "^140.0.1",
-    "helmet": "^5.1.1",
-    "lodash": "^4.17.21",
-    "lru-cache": "^11.0.0",
-    "node-fetch": "^2.7.0",
-    "punycode": "^2.3.1",
-    "querystring": "^0.2.0",
-    "simple-oauth2": "^5.1.0",
-    "sqlite3": "^5.1.7",
-    "terser": "^5.31.2",
-    "uglify-js": "^3.19.0",
-    "webflow-api": "^2.3.5"
+    "fastify": "^4.6.0",
+    "level": "^8.0.0",
+    "ngrok": "^5.0.0-beta.2",
+    "nodemon": "^2.0.20",
+    "simple-oauth2": "^4.3.0",
+    "webflow-api": "^0.8.1"
   },
-  "keywords": [],
-  "author": "pseudø arepo",
-  "license": "ISC",
   "devDependencies": {
-    "jest": "^29.7.0",
-    "supertest": "^7.0.0"
-  },
-  "directories": {
-    "test": "tests"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Demothedread/hocblog-local.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Demothedread/hocblog-local/issues"
-  },
-  "homepage": "https://hocblog-f5e15700baff.herokuapp.com/"
+    "@webflow/designer-extension-typings": "^0.1.12"
+  }
 }
