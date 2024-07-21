@@ -2,15 +2,15 @@
   "name": "autoblogger",
   "description": "Let's get er started up and launch that server for autoblogging on the webflow platform.",
   "author": {
-    "name": "Hoc Omnia Nihil Est",
-    "email": "demo@hocomnia.com"
+    "name": "Hoc Omnia Nihil Est"
   },
   "version": "1.0.0",
   "main": "server.js",
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon -r dotenv/config server.js"
+    "dev": "nodemon -r dotenv/config server.js",
+    "start": "node server.js"
   },
   "dependencies": {
     "@fastify/static": "^6.5.0",
@@ -23,7 +23,9 @@
     "ngrok": "^5.0.0-beta.2",
     "nodemon": "^2.0.20",
     "simple-oauth2": "^4.3.0",
-    "webflow-api": "^0.8.1"
+    "webflow-api": "^0.8.1",
+    "helmet": "^7.1.0",
+    "cookie-parser": "^1.4.6"
   },
   "devDependencies": {
     "@webflow/designer-extension-typings": "^0.1.12"
