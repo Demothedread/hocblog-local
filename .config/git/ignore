@@ -1,8 +1,8 @@
-*.<i class="fa fa-envelope" aria-hidden="true"></i>
-<div class="env"></div>
-.env localserver.js
+.env 
+localserver.js
 oath.js
 archive/*
+compare/*
 cheatsheet.txt
 doc/*.txt
 extra/*

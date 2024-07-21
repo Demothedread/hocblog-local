@@ -1,9 +1,18 @@
-const express = require('express');
-const { AuthorizationCode } = require('simple-oauth2');
-const axios = require('axios');
-const cookieParser = require('cookie-parser');
-const helmet = require('helmet');
-require('dotenv').config();
+import express from 'express';
+import { AuthorizationCode } from 'simple-oauth2';
+import axios from 'axios';
+import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Load environment variables
+dotenv.config();
+
+// Set up __dirname and __filename for ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(helmet());
@@ -20,10 +29,10 @@ const {
   WEBFLOW_CLIENT_SECRET,
   REDIRECT_URI,
   CHATGPT_API_KEY,
-  WEBFLOW_API_TOKEN
+  WEBFLOW_API_TOKEN,
+  WEBFLOW_API_URL,
+  ZAPIER_WEBHOOK_URL
 } = process.env;
-
-const WEBFLOW_API_URL = `https://api.webflow.com/v2/collections/${WEBFLOW_COLLECTION_ID}/items`;
 
 const oauth2 = new AuthorizationCode({
   client: {
@@ -38,7 +47,6 @@ const oauth2 = new AuthorizationCode({
   },
 });
 
-// Authenticate and authorize the app
 app.get('/auth', (req, res) => {
   const state = Math.random().toString(36).substring(7);
   const authorizationUri = oauth2.authorizeURL({
@@ -97,7 +105,6 @@ app.get('/callback', async (req, res) => {
   }
 });
 
-// Generate a blog post and create a collection item
 app.post('/generate-blog', async (req, res) => {
   const { topic, length, comprehension, tone } = req.body;
   const prompt = `Generate a blog post about ${topic} with a length of ${length} for an audience with ${comprehension} level of comprehension and a tone of ${tone}.`;
@@ -208,16 +215,7 @@ app.post('/generate-blog', async (req, res) => {
 });
 
 // Serve static files
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
-
-server.register(fastifyStatic, {
-  root: path.join(__dirname, "static"),
-});
-
-server.get("/", async (req, reply) => {
-  await reply.sendFile("index.html");
-});
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

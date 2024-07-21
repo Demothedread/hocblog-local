@@ -1,9 +1,9 @@
 {
   "name": "autoblogger",
-  "description": "A boilerplate to quickly get started with Webflow Apps",
+  "description": "Let's get er started up and launch that server for autoblogging on the webflow platform.",
   "author": {
-    "name": "Your Name",
-    "email": "your.email@example.com"
+    "name": "Hoc Omnia Nihil Est",
+    "email": "demo@hocomnia.com"
   },
   "version": "1.0.0",
   "main": "server.js",
