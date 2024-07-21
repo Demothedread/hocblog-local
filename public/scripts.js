@@ -11,16 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
       let endpoint = '';
       switch (contentDestination) {
         case 'Blog':
-          endpoint = '/generate-blog';
+          endpoint = 'https://hocblog-f5e15700baff.herokuapp.com/generate-blog';
           break;
         case 'Twitter':
-          endpoint = '/generate-tweet';
+          endpoint = 'https://hocblog-f5e15700baff.herokuapp.com/generate-tweet';
           break;
         case 'Instagram':
-          endpoint = '/generate-post';
+          endpoint = 'https://hocblog-f5e15700baff.herokuapp.com/generate-post';
           break;
         case 'Word':
-          endpoint = '/generate-doc';
+          endpoint = 'https://hocblog-f5e15700baff.herokuapp.com/generate-doc';
           break;
         default:
           alert('Invalid content destination');

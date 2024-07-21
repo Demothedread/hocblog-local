@@ -105,11 +105,12 @@ app.get('/callback', async (req, res) => {
       console.log('Using existing access token');
     }
 
-    res.redirect('/?authenticated=true');
-  } catch (error) {
-    console.error('Access Token Error:', error.message);
-    res.status(500).json('Authentication failed due to Access Token Error');
-  }
+  // Redirect back to the front-facing website after authentication
+  res.redirect('https://www.hocomnia.com/autoblogger/?authenticated=true');
+} catch (error) {
+  console.error('Access Token Error:', error.message);
+  res.status(500).json('Authentication failed due to Access Token Error');
+}
 });
 
 // Route to generate blog post using ChatGPT and create Webflow CMS item

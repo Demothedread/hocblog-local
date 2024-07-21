@@ -4,7 +4,9 @@
         "AUTOINCREMENT",
         "DALLE",
         "doxx",
+        "horiz",
         "NIXPACKS",
+        "voguing",
         "WEBFLOW"
     ],
     "vscode-edge-devtools.browserFlavor": "Default",
