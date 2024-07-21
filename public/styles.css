@@ -1,5 +1,22 @@
 /* styles.css */
-
+.loading-container {
+    display: none;
+    text-align: center;
+  }
+  
+  .loader {
+    border: 4px solid #f3f3f3; /* Light grey */
+    border-top: 4px solid #3498db; /* Blue */
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+    margin: 20px auto;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
 body {
     font-family: "bulletin-typewriter-mn", sans-serif, 'Lucida', 'Gill Sans', Arial;
     font-weight: 400;
@@ -8,6 +25,8 @@ body {
     font-size:large;
     margin: 20px;
     background-color: #9d9df1;
+    -webkit-text-size-adjust: 100%; 
+        text-size-adjust: 100%;
 }
 .banner-title {
     display: flex;

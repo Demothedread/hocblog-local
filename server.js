@@ -38,11 +38,33 @@ const oauth2 = new AuthorizationCode({
   },
 });
 
+// Authenticate and authorize the app
 app.get('/auth', (req, res) => {
   const state = Math.random().toString(36).substring(7);
   const authorizationUri = oauth2.authorizeURL({
     redirect_uri: REDIRECT_URI,
-    scope: 'all',
+    scope: [
+      'collections:write',
+      'collections:read',
+      'assets:write',
+      'assets:read',
+      'forms:write',
+      'forms:read',
+      'pages:write',
+      'pages:read',
+      'sites:write',
+      'sites:read',
+      'ecommerce:write',
+      'ecommerce:read',
+      'user:write',
+      'user:read',
+      'workspace:write',
+      'workspace:read',
+      'components:read',
+      'subscriptions:read',
+      'activity:read',
+      'user:read',
+    ].join(' '),
     state,
   });
   console.log('Redirecting to:', authorizationUri);
@@ -75,9 +97,12 @@ app.get('/callback', async (req, res) => {
   }
 });
 
+// Generate a blog post and create a collection item
 app.post('/generate-blog', async (req, res) => {
   const { topic, length, comprehension, tone } = req.body;
   const prompt = `Generate a blog post about ${topic} with a length of ${length} for an audience with ${comprehension} level of comprehension and a tone of ${tone}.`;
+
+  console.log('Generating blog with prompt:', prompt);
 
   try {
     const chatGptResponse = await axios.post(
@@ -180,6 +205,18 @@ app.post('/generate-blog', async (req, res) => {
     console.error('Error processing request:', error);
     res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
+});
+
+// Serve static files
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
+
+server.register(fastifyStatic, {
+  root: path.join(__dirname, "static"),
+});
+
+server.get("/", async (req, reply) => {
+  await reply.sendFile("index.html");
 });
 
 app.listen(PORT, () => {
