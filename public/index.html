@@ -5,47 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Autoblogger</title>
     <link rel="stylesheet" href="https://use.typekit.net/yvq3jwv.css">
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <div class="banner-title" aria-label="AUTOBLOGGER"><span>O</span><span>T</span><span>T</span><span>O</span>
-    <div class="content">
-        <h1>Generate a CMS Blog Post</h1>
-        <div id="authSection">
-            <a id="authLink" href="/auth">Webflow CMS Authentication</a>
-        </div>
-        <div id="formSection" style="display: none;">
-            <form id="blogForm">
-                <label for="topic">Write a Blog Post About:</label>
-                <input type="text" id="topic" name="topic" required><br><br>
-                <label for="length">Length:</label>
-                <input type="text" id="length" name="length" required><br><br>
-                <label for="comprehension">Audience Comprehension:</label>
-                <select id="comprehension" name="comprehension" required>
-                    <option value="Explain Like I'm 5">Explain Like I'm 5</option>
-                    <option value="High School">High School</option>
-                    <option value="College Graduate">College Graduate</option>
-                    <option value="Industry Professional">Industry Professional</option>
-                    <option value="Experts Only">Experts Only</option>
-                </select><br><br>
-                <label for="tone">Tone:</label>
-                <select id="tone" name="tone" required>
-                    <option value="casual chit-chat">Casual Chit-Chat</option>
-                    <option value="personal testimony">Personal Testimony</option>
-                    <option value="authoritatively informative">Authoritatively Informative</option>
-                    <option value="passionately persuasive">Passionately Persuasive</option>
-                    <option value="subversively post-structural">Subversively Post-Structural</option>
-                </select><br><br>
-                <button type="submit" onclick="showLoadingAnimation()">Generate</button>
-                <div class="loading-container" id="loadingContainer">
-                    <div class="loading"></div>
-                    <p>loading....</p>  
-                </div>
-            </form>
-            <div id="result"></div>
-        </div>
-    </div>
-    <script src="/scripts.js"></script>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#otto">OTTO</a></li>
+                <li><a href="#projects">Past Projects</a></li>
+                <li><a href="#blog">A Few Too Many</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="otto">
+            <h1>Autoblogger</h1>
+            <div id="authSection">
+                <a id="authLink" href="/auth">Authenticate</a>
+            </div>
+            <div id="formSection" style="display: none;">
+                <form id="blogForm">
+                    <label for="topic">Write a Blog Post About:</label>
+                    <input type="text" id="topic" name="topic" required><br><br>
+                    <label for="length">Length:</label>
+                    <input type="text" id="length" name="length" required><br><br>
+                    <label for="comprehension">Audience Comprehension:</label>
+                    <select id="comprehension" name="comprehension" required>
+                        <option value="Explain Like I'm 5">Explain Like I'm 5</option>
+                        <option value="High School">High School</option>
+                        <option value="College Graduate">College Graduate</option>
+                        <option value="Industry Professional">Industry Professional</option>
+                        <option value="Experts Only">Experts Only</option>
+                    </select><br><br>
+                    <label for="tone">Tone:</label>
+                    <select id="tone" name="tone" required>
+                        <option value="casual chit-chat">Casual Chit-Chat</option>
+                        <option value="personal testimony">Personal Testimony</option>
+                        <option value="authoritatively informative">Authoritatively Informative</option>
+                        <option value="passionately persuasive">Passionately Persuasive</option>
+                        <option value="subversively post-structural">Subversively Post-Structural</option>
+                    </select><br><br>
+                    <label for="contentDestination">Content Destination:</label>
+                    <select id="contentDestination" name="contentDestination" required>
+                        <option value="Blog">Blog</option>
+                        <option value="Twitter">Twitter</option>
+                        <option value="Instagram">Instagram</option>
+                        <option value="Word">Word</option>
+                    </select><br><br>
+                    <button type="submit">Generate</button>
+                </form>
+                <div id="result"></div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Autoblogger. All rights reserved.</p>
+    </footer>
+    <script src="scripts.js"></script>
 </body>
 </html>
