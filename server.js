@@ -6,12 +6,7 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import Webflow from 'webflow-api';
-import Fastify from 'fastify';
-import fastifyStatic from '@fastify/static';
-import App from './webflow.js';
 
-// Load environment variables
 dotenv.config();
 
 const {
@@ -24,20 +19,18 @@ const {
   DALLE_API_URL = 'https://api.openai.com/v1/images/generations',
   CHATGPT_API_KEY,
   WEBFLOW_API_TOKEN,
-  WEBFLOW_API_URL,
-  ZAPIER_WEBHOOK_URL
+  WEBFLOW_API_URL = `https://api.webflow.com/collections/${WEBFLOW_COLLECTION_ID}/items`,
+  ZAPIER_WEBHOOK_URL,
+  REDIRECT_URI
 } = process.env;
 
 const app = express();
 app.use(helmet());
 app.use(express.json());
-app.use(express.static('public'));
 app.use(cookieParser());
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-const webflowApp = new App(WEBFLOW_CLIENT_ID, WEBFLOW_CLIENT_SECRET);
 
 const oauth2 = new AuthorizationCode({
   client: {
@@ -50,6 +43,31 @@ const oauth2 = new AuthorizationCode({
     authorizePath: '/oauth/authorize',
     tokenPath: '/oauth/access_token',
   },
+});
+
+// Middleware to verify authentication and initialize Webflow client
+app.use(async (req, res, next) => {
+  try {
+    const webflowAccessToken = req.cookies.webflow_access_token || WEBFLOW_API_TOKEN;
+
+    if (!webflowAccessToken) {
+      return res.status(401).json({ message: 'User not authenticated due to lack of access token' });
+    }
+
+    req.webflowClient = axios.create({
+      baseURL: 'https://api.webflow.com',
+      headers: {
+        'Authorization': `Bearer ${webflowAccessToken}`,
+        'Content-Type': 'application/json',
+        'accept-version': '1.0.0',
+      }
+    });
+
+    next();
+  } catch (error) {
+    console.error('Error initializing Webflow client:', error);
+    res.status(500).json({ message: 'Failed to initialize Webflow client' });
+  }
 });
 
 // Route to initiate OAuth authentication with Webflow
@@ -105,12 +123,11 @@ app.get('/callback', async (req, res) => {
       console.log('Using existing access token');
     }
 
-  // Redirect back to the front-facing website after authentication
-  res.redirect('https://www.hocomnia.com/autoblogger/?authenticated=true');
-} catch (error) {
-  console.error('Access Token Error:', error.message);
-  res.status(500).json('Authentication failed due to Access Token Error');
-}
+    res.redirect('https://www.hocomnia.com/autoblogger/?authenticated=true');
+  } catch (error) {
+    console.error('Access Token Error:', error.message);
+    res.status(500).json('Authentication failed due to Access Token Error');
+  }
 });
 
 // Route to generate blog post using ChatGPT and create Webflow CMS item
@@ -200,25 +217,10 @@ app.post('/generate-blog', async (req, res) => {
       isDraft: false
     };
 
-    const webflowAccessToken = req.cookies.webflow_access_token || WEBFLOW_API_TOKEN;
-
-    if (!webflowAccessToken) {
-      console.error('User not authenticated');
-      return res.status(401).json({ message: 'User not authenticated due to lack of access token' });
-    }
-
     // Create new item in Webflow CMS
-    const webflowResponse = await axios.post(
-      WEBFLOW_API_URL,
-      { fields: cmsData },
-      {
-        headers: {
-          'Authorization': `Bearer ${webflowAccessToken}`,
-          'Content-Type': 'application/json',
-          'accept-version': '1.0.0'
-        }
-      }
-    );
+    const webflowResponse = await req.webflowClient.post(`/collections/${WEBFLOW_COLLECTION_ID}/items`, {
+      fields: cmsData
+    });
 
     console.log('Webflow Response:', webflowResponse.data);
     res.status(200).json({ message: 'Blog post generated and added to Webflow CMS successfully', webflowData: webflowResponse.data });
@@ -234,75 +236,4 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Start Express server
 app.listen(PORT, () => {
   console.log(`Express server is running on http://localhost:${PORT}`);
-});
-
-// Instantiate Fastify server
-const fastifyServer = Fastify({
-  logger: true,
-});
-
-// Webhook route
-fastifyServer.post("/webhook", async (req, reply) => {
-  try {
-    const valid = webflowApp.verifyRequest(req.headers, req.body);
-    if (!valid) return reply.status(401).send("Invalid request");
-
-    const { site } = req.body;
-    const token = await webflowApp.data.get(site);
-    const webflow = new Webflow({ token });
-    const user = await webflow.get("/user");
-
-    reply.statusCode = 200;
-    reply.send(user);
-  } catch (error) {
-    console.error('Webhook error:', error.message);
-    reply.status(500).send('Internal Server Error');
-  }
-});
-
-// Serve static files in Fastify
-fastifyServer.register(fastifyStatic, {
-  root: path.join(__dirname, 'public'),
-});
-
-fastifyServer.get("/", async (req, reply) => {
-  await reply.sendFile("index.html");
-});
-
-fastifyServer.get("/auth", async (req, reply) => {
-  const { code } = req.query;
-  if (code) {
-    try {
-      const token = await webflowApp.install(code);
-      await webflowApp.storeToken(token);
-      reply.sendFile("index.html");
-    } catch (error) {
-      console.error('Auth error:', error.message);
-      reply.status(500).send('Internal Server Error');
-    }
-  } else {
-    const installUrl = webflowApp.installUrl();
-    reply.redirect(installUrl);
-  }
-});
-
-fastifyServer.get("/sites", async (req, reply) => {
-  try {
-    const token = await webflowApp.getToken();
-    const webflow = new Webflow({ token });
-    const sites = await webflow.get("/beta/sites");
-    reply.send(sites);
-  } catch (error) {
-    console.error('Sites error:', error.message);
-    reply.status(500).send('Internal Server Error');
-  }
-});
-
-// Start Fastify server
-fastifyServer.listen({ port: PORT, host: "localhost" }, (err) => {
-  if (err) {
-    console.error('Fastify server error:', err.message);
-    throw err;
-  }
-  console.log(`Fastify server is running on http://localhost:${PORT}`);
 });
