@@ -1,39 +1,31 @@
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('blogForm').addEventListener('submit', async (event) => {
+    const lengthSelect = document.getElementById('length');
+    const customLengthInput = document.getElementById('customLength');
+  
+    lengthSelect.addEventListener('change', () => {
+      if (lengthSelect.value === 'custom') {
+        customLengthInput.style.display = 'block';
+      } else {
+        customLengthInput.style.display = 'none';
+      }
+    });
+  
+    document.getElementById('contentForm').addEventListener('submit', async (event) => {
       event.preventDefault();
   
       const topic = document.getElementById('topic').value;
-      const length = document.getElementById('length').value;
+      const length = lengthSelect.value === 'custom' ? customLengthInput.value : lengthSelect.value;
       const comprehension = document.getElementById('comprehension').value;
       const tone = document.getElementById('tone').value;
-      const contentDestination = document.getElementById('contentDestination').value;
-  
-      let endpoint = '';
-      switch (contentDestination) {
-        case 'Blog':
-          endpoint = 'https://hocblog-f5e15700baff.herokuapp.com/generate-blog';
-          break;
-        case 'Twitter':
-          endpoint = 'https://hocblog-f5e15700baff.herokuapp.com/generate-tweet';
-          break;
-        case 'Instagram':
-          endpoint = 'https://hocblog-f5e15700baff.herokuapp.com/generate-post';
-          break;
-        case 'Word':
-          endpoint = 'https://hocblog-f5e15700baff.herokuapp.com/generate-doc';
-          break;
-        default:
-          alert('Invalid content destination');
-          return;
-      }
+      const destination = document.getElementById('destination').value;
   
       try {
-        const response = await fetch(endpoint, {
+        const response = await fetch('/generate', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ topic, length, comprehension, tone })
+          body: JSON.stringify({ topic, length, comprehension, tone, destination })
         });
         const data = await response.json();
         document.getElementById('result').innerText = data.message;
@@ -43,22 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   
-    // Check for access token and display authentication message
-    const webflowAccessToken = getCookie('webflow_access_token');
-  
-    if (webflowAccessToken) {
-      const authSection = document.getElementById('authSection');
-      const authMessage = document.createElement('p');
-      authMessage.textContent = 'Webflow side has been authenticated';
-      authSection.appendChild(authMessage);
-  
+    // Check if the user is authenticated and show/hide form accordingly
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('authenticated')) {
+      document.getElementById('authSection').style.display = 'none';
       document.getElementById('formSection').style.display = 'block';
     }
   });
-  
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-  }
-  

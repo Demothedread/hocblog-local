@@ -1,33 +1,22 @@
 {
-  "name": "autoblogger",
-  "description": "Let's get er started up and launch that server for autoblogging on the webflow platform.",
-  "author": {
-    "name": "Hoc Omnia Nihil Est"
-  },
+  "name": "otto",
   "version": "1.0.0",
+  "description": "OTTO - Make OTTO Do Everything",
   "main": "server.js",
   "type": "module",
-  "license": "MIT",
   "scripts": {
-    "dev": "nodemon -r dotenv/config server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon -r dotenv/config server.js"
   },
   "dependencies": {
     "@fastify/static": "^6.5.0",
-    "axios": "^1.7.2",
-    "body-parser": "^1.20.2",
-    "cookie-parser": "^1.4.6",
+    "axios": "^0.24.0",
+    "cookie-parser": "^1.4.5",
     "dotenv": "^16.0.2",
-    "express": "^4.19.2",
-    "fastify": "^4.6.0",
-    "helmet": "^7.1.0",
-    "level": "^8.0.0",
-    "ngrok": "^5.0.0-beta.2",
+    "express": "^4.17.1",
+    "helmet": "^4.6.0",
     "nodemon": "^2.0.20",
     "simple-oauth2": "^4.3.0",
     "webflow-api": "^0.8.1"
-  },
-  "devDependencies": {
-    "@webflow/designer-extension-typings": "^0.1.12"
   }
 }

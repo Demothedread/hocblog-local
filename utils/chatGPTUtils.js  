@@ -1,0 +1,19 @@
+import fs from 'fs';
+import path from 'path';
+
+export const generateChatGPTPrompt = (topic: string, length: number, comprehension: string, tone: string, destination: string): string => {
+    return `Generate a ${length} word ${destination} about ${topic} with a comprehension level of ${comprehension} and a tone of ${tone}.`;
+};
+
+
+    export const saveToCSV = (data) => {
+    const csv = ${data.title},${data.subtitle},${data.content},${data.summary},${data.imageUrl},${data.keywords.join(';')},${data.category}\n;
+    const filePath = path.join(__dirname, ‘../history/archive.csv’);
+    
+    fs.appendFile(filePath, csv, (err) => {
+    if (err) throw err;
+    console.log(‘Data saved to archive.csv’);
+    });
+
+    fs.appendFileSync(csvFilePath, csvContent, ‘utf8’);
+};     
