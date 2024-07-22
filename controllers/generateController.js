@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { generateChatGPTPrompt, saveToCSV } from '../utils/chatgptUtils.js';
 
+const prompt = generateChatGPTPrompt(topic, length, comprehension, tone, destination);
+
 export const generateContent = async (req, res) => {
   const { topic, length, comprehension, tone, destination } = req.body;
-
-  const prompt = generateChatGPTPrompt(topic, length, comprehension, tone, destination);
 
   try {
     const chatGptResponse = await axios.post(
@@ -12,7 +12,7 @@ export const generateContent = async (req, res) => {
       {
         model: 'gpt-3.5-turbo',
         messages: [{ role: 'system', content: prompt }],
-        max_tokens: 2050,
+        max_tokens: 2800,
         temperature: 0.5
       },
       {
@@ -43,7 +43,7 @@ export const generateContent = async (req, res) => {
     );
 
     const summary = summaryResponse.data.choices[0].message.content;
-
+                                                                                                                                                                                                                                                                                                    
     // Generate image
     const imageResponse = await axios.post(
       process.env.DALLE_API_URL,

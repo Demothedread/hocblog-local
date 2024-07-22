@@ -3,66 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.typekit.net/yvq3jwv.css">
     <title>OTTO - Make OTTO Do Everything</title>
     <link rel="stylesheet" href="/styles.css">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <div class="banner-title" aria-label="OTTO"><span>O</span><span>T</span><span>T</span><span>O</span></div>
-    <div class="content">
-        <h1>Generate Content with OTTO</h1>
-        <div id="authSection">
-            <a id="authLink" href="/auth">Authenticate</a>
-        </div>
-        <div id="formSection" style="display: none;">
-            <form id="contentForm">
-                <label for="topic">Subject Matter:</label>
-                <input type="text" id="topic" name="topic" required><br><br>
+    <div class="container">
+        <h1>Generate a Blog Post with OTTO</h1>
+        <form id="blogForm">
+            <label for="topic">Subject Matter:</label>
+            <input type="text" id="topic" name="topic" required><br><br>
+            
+            <label for="length">Word Length:</label>
+            <select id="length" name="length" required>
+                <option value="250">Short (250 words)</option>
+                <option value="600">Medium (600 words)</option>
+                <option value="1200">Long (1200 words)</option>
+                <option value="3000">Max (3000 words)</option>
+                <option value="Custom">Custom</option>
+            </select><br><br>
 
-                <label for="length">Word Length:</label>
-                <select id="length" name="length" required>
-                    <option value="250">Short (250 words)</option>
-                    <option value="600">Medium (600 words)</option>
-                    <option value="1200">Long (1200 words)</option>
-                    <option value="3000">Max (3000 words)</option>
-                    <option value="custom">Custom</option>
-                </select>
-                <input type="text" id="customLength" name="customLength" style="display: none;" placeholder="Enter custom length"><br><br>
+            <label for="comprehension">Audience Comprehension:</label>
+            <select id="comprehension" name="comprehension" required>
+                <option value="Explain Like I'm 5">Explain Like I'm 5</option>
+                <option value="General Audience">General Audience</option>
+                <option value="Industry Veterans">Industry Veterans</option>
+                <option value="phD Dissertation Committee">phD Dissertation Committee</option>
+                <option value="Experts Only">Experts Only</option>
+            </select><br><br>
 
-                <label for="comprehension">Audience Comprehension:</label>
-                <select id="comprehension" name="comprehension" required>
-                    <option value="Explain Like I'm 5">Explain Like I'm 5</option>
-                    <option value="General Audience">General Audience</option>
-                    <option value="Industry Veterans">Industry Veterans</option>
-                    <option value="phD Dissertation Committee">phD Dissertation Committee</option>
-                    <option value="Experts Only">Experts Only</option>
-                </select><br><br>
+            <label for="tone">Tone:</label>
+            <select id="tone" name="tone" required>
+                <option value="casual chat">Casual Chat</option>
+                <option value="personal appeal">Personal Appeal</option>
+                <option value="objectively informative">Objectively Informative</option>
+                <option value="passionately persuasive">Passionately Persuasive</option>
+                <option value="subversively post-structural">Subversively Post-Structural</option>
+            </select><br><br>
 
-                <label for="tone">Tone:</label>
-                <select id="tone" name="tone" required>
-                    <option value="casual chat">Casual Chat</option>
-                    <option value="personal appeal">Personal Appeal</option>
-                    <option value="objectively informative">Objectively Informative</option>
-                    <option value="passionately persuasive">Passionately Persuasive</option>
-                    <option value="subversively post-structural">Subversively Post-Structural</option>
-                </select><br><br>
+            <label for="destination">Destination:</label>
+            <select id="destination" name="destination" required>
+                <option value="Blog Post">CMS Item (Blog Post)</option>
+                <option value="Word Doc">Word Doc</option>
+                <option value="Tweet">Tweet</option>
+                <option value="Instagram Post">Instagram Post</option>
+                <option value="Email">Email</option>
+                <option value="Presentation">Presentation</option>
+                <option value="Project Outline">Project Outline</option>
+            </select><br><br>
 
-                <label for="destination">Destination:</label>
-                <select id="destination" name="destination" required>
-                    <option value="CMS Item">CMS Item (blog post)</option>
-                    <option value="Word Doc">Word Doc</option>
-                    <option value="Tweet">Tweet</option>
-                    <option value="Instagram Post">Instagram Post</option>
-                    <option value="Email">Email</option>
-                    <option value="Presentation">Presentation</option>
-                    <option value="Project Outline">Project Outline</option>
-                </select><br><br>
-
-                <button type="submit">Generate</button>
-            </form>
-            <div id="result"></div>
-        </div>
+            <button type="submit">Generate</button>
+        </form>
+        <div id="result"></div>
     </div>
-    <script src="/scripts.js"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>

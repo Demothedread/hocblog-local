@@ -1,14 +1,14 @@
-body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-  color: #fff;
-  text-align: center;
-  padding: 50px;
-}
+
 
 .banner-title {
   font-size: 4em;
   margin-bottom: 20px;
+  text-align: center;
+  font-family: 'lincoln-electric-regular', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  color: #e9168ae0;
+  stroke: slategray;
+  stroke-width: 1.2px;
+  font-sh
 }
 
 .content {
@@ -60,6 +60,11 @@ body {
   margin: 0;
   padding: 0;
   position: relative;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
   overflow: hidden;
 }
 body::before {
@@ -114,7 +119,6 @@ h1 {
   text-align: center;
   font-family: 'voguing', Arial, Helvetica, sans-serif;
   font-size: 2.5rem;
-  font-un
   margin-bottom: 1rem;
   color: #333;
 }

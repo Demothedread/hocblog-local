@@ -19,7 +19,7 @@ export const authRedirect = (req, res) => {
   const state = Math.random().toString(36).substring(7);
   const authorizationUri = oauth2.authorizeURL({
     redirect_uri: process.env.REDIRECT_URI,
-    scope: 'collections:write collections:read cms:read cms:write form:read form:write pages:read pages:write sites:read sites:write',
+    scope: 'assets:read assets:write components:read cms:read cms:write pages:write pages:read sites:read sites:write forms:read forms:write workspace:read workspace:write',
     state,
   });
   res.redirect(authorizationUri);
@@ -38,12 +38,15 @@ export const authCallback = async (req, res) => {
     if (!accessToken) {
       const result = await oauth2.getToken(options);
       accessToken = result.token.access_token;
+      console.log('Access Token received:', accessToken);
       res.cookie('webflow_access_token', accessToken, { httpOnly: true });
+    } else {
+      console.log('Using existing access token');
     }
 
     res.redirect('/?authenticated=true');
   } catch (error) {
     console.error('Access Token Error:', error.message);
-    res.status(500).json('Authentication failed due to an AX ASS Token Error');
+    res.status(500).json('Authentication failed due to Access Token Error');
   }
 };
