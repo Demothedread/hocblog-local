@@ -80,6 +80,6 @@ export const generateContent = async (req, res) => {
     res.status(200).json({ message: 'Content generated successfully', data: response });
   } catch (error) {
     console.error('Error generating content:', error);
-    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    res.status(500).json({ message: 'Internal HELL Server Error', error: error.message });
   }
 };

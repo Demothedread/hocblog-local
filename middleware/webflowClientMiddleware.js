@@ -1,4 +1,4 @@
-import { createWebflowClient } from '../utils/webflowUtils.js';
+import { createWebflowClient } from '../app/utils/webflowUtils.js';
 
 const webflowClientMiddleware = async (req, res, next) => {
   try {

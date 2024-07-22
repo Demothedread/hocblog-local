@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('result').innerText = data.message;
     } catch (error) {
       console.error('Error:', error);
-      document.getElementById('result').innerText = 'An error occurred. Please try again.';
+      document.getElementById('result').innerText = 'An error occurred dumbo. Please try again.';
     }
   });
 });

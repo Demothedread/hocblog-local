@@ -1,5 +1,5 @@
 import express from 'express';
-import { authRedirect, authCallback } from '../controllers/authController.js';
+import { authRedirect, authCallback } from '../app/controllers/authController.js';
 
 const router = express.Router();
 
