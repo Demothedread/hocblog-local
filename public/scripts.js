@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const destination = document.getElementById('destination').value;
 
     try {
-      const response = await fetch('/generate-blog', {
+      const response = await fetch('/generate', { // Ensure this endpoint matches your server route
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('result').innerText = data.message;
     } catch (error) {
       console.error('Error:', error);
-      document.getElementById('result').innerText = 'An error occurred dumbo. Please try again.';
+      document.getElementById('result').innerText = 'An error occurred. Please try again.';
     }
   });
 });

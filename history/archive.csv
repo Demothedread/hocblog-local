@@ -1,2 +1,1 @@
-#archive.csv 
-Title,Subtitle,Content,Summary,ImageURL,Keywords,Category,Date
+header = [Title, Subtitle, Content, Summary, ImageURL, Keywords, Category, Date]

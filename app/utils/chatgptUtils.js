@@ -6,16 +6,25 @@ export const generateChatGPTPrompt = (topic, length, comprehension, tone, destin
 };
 
 export const saveToCSV = (data) => {
-  const csvFilePath = path.join(__dirname, '../history/archive.csv');
+  const csvDirPath = path.join(__dirname, '../../history/');
+  const csvFilePath = path.join(csvDirPath, 'archive.csv');
   const csvHeaders = 'Title,Subtitle,Content,Summary,ImageURL,Keywords,Category,Date\n';
-  const csvContent = `${data.title},${data.subtitle},${data.content},${data.summary},${data.imageUrl},${data.keywords.join('|')},${data.category},${new Date().toISOString()}\n`;
+  const csvContent = `"${data.title}","${data.subtitle}","${data.content}","${data.summary}","${data.imageUrl}","${data.keywords.join('|')}","${data.category}","${new Date().toISOString()}"\n`;
 
-  // Check if the file exists
-  if (!fs.existsSync(csvFilePath)) {
-    // If the file doesn't exist, write the headers first
-    fs.writeFileSync(csvFilePath, csvHeaders, 'utf8');
+  try {
+    // Ensure the directory exists
+    if (!fs.existsSync(csvDirPath)) {
+      fs.mkdirSync(csvDirPath, { recursive: true });
+    }
+
+    // Check if the file exists and write headers if it doesn't
+    if (!fs.existsSync(csvFilePath)) {
+      fs.writeFileSync(csvFilePath, csvHeaders, 'utf8');
+    }
+
+    // Append the new content
+    fs.appendFileSync(csvFilePath, csvContent, 'utf8');
+  } catch (error) {
+    console.error('Error saving to CSV:', error);
   }
-
-  // Append the new content
-  fs.appendFileSync(csvFilePath, csvContent, 'utf8');
 };

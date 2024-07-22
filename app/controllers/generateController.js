@@ -1,70 +1,61 @@
 import axios from 'axios';
 import { generateChatGPTPrompt, saveToCSV } from '../utils/chatgptUtils.js';
 
-const prompt = generateChatGPTPrompt(topic, length, comprehension, tone, destination);
-
 export const generateContent = async (req, res) => {
-  const { topic, length, comprehension, tone, destination } = req.body;
-
   try {
-    const chatGptResponse = await axios.post(
-      process.env.CHATGPT_API_URL,
-      {
-        model: 'gpt-3.5-turbo',
+    const { topic, length, comprehension, tone, destination } = req.body;
+
+    // Validate input and handle potential edge cases
+    if (!topic || !length || !comprehension || !tone || !destination) {
+      return res.status(400).json({ message: 'Invalid input data' });
+    }
+
+    const prompt = generateChatGPTPrompt(topic, length, comprehension, tone, destination);
+
+    // Make all necessary API requests concurrently for improved performance
+    const [chatGptResponse, summaryResponse, imageResponse] = await Promise.all([
+      axios.post(process.env.CHATGPT_API_URL, {
+        model: 'gpt-4o-mini',
         messages: [{ role: 'system', content: prompt }],
         max_tokens: 2800,
         temperature: 0.5
-      },
-      {
+      }, {
         headers: {
           'Authorization': `Bearer ${process.env.CHATGPT_API_KEY}`,
           'Content-Type': 'application/json'
         }
-      }
-    );
-
-    const content = chatGptResponse.data.choices[0].message.content;
-
-    // Generate summary
-    const summaryResponse = await axios.post(
-      process.env.CHATGPT_API_URL,
-      {
-        model: 'gpt-3.5-turbo',
-        messages: [{ role: 'system', content: `Summarize the following blog post in 250 characters: ${content}` }],
+      }),
+      axios.post(process.env.CHATGPT_API_URL, {
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'system', content: `Summarize the following blog post in 250 characters: ${prompt}` }],
         max_tokens: 175,
         temperature: 0.4
-      },
-      {
+      }, {
         headers: {
           'Authorization': `Bearer ${process.env.CHATGPT_API_KEY}`,
           'Content-Type': 'application/json'
         }
-      }
-    );
-
-    const summary = summaryResponse.data.choices[0].message.content;
-                                                                                                                                                                                                                                                                                                    
-    // Generate image
-    const imageResponse = await axios.post(
-      process.env.DALLE_API_URL,
-      {
-        prompt: `Create an image that captures the essence of the following blog post: ${summary.slice(0, 100)}`,
+      }),
+      axios.post(process.env.DALLE_API_URL, {
+        prompt: `Create an image that captures the essence of the following blog post: ${prompt.slice(0, 100)}`,
         n: 1,
         size: '512x512',
         response_format: 'url',
-        model: 'dall-e-2',
         style: 'vivid'
-      },
-      {
+      }, {
         headers: {
           'Authorization': `Bearer ${process.env.CHATGPT_API_KEY}`,
           'Content-Type': 'application/json'
         }
-      }
-    );
+      })
+    ]);
 
+    // Extract data from responses
+    const content = chatGptResponse.data.choices[0].message.content;
+    const summary = summaryResponse.data.choices[0].message.content;
     const imageUrl = imageResponse.data.data[0].url;
 
+    // Construct response object
     const response = {
       title: `Blog Post About ${topic}`,
       subtitle: `Summary of ${topic}`,
@@ -75,11 +66,11 @@ export const generateContent = async (req, res) => {
       category: 'General'
     };
 
+    // Save to CSV and send successful response
     saveToCSV(response);
-
     res.status(200).json({ message: 'Content generated successfully', data: response });
   } catch (error) {
     console.error('Error generating content:', error);
-    res.status(500).json({ message: 'Internal HELL Server Error', error: error.message });
+    res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
 };
