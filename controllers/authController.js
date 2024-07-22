@@ -19,7 +19,7 @@ export const authRedirect = (req, res) => {
   const state = Math.random().toString(36).substring(7);
   const authorizationUri = oauth2.authorizeURL({
     redirect_uri: process.env.REDIRECT_URI,
-    scope: 'collections:write collections:read assets:write assets:read forms:write forms:read pages:write pages:read sites:write sites:read ecommerce:write ecommerce:read user:write user:read workspace:write workspace:read components:read subscriptions:read activity:read user:read',
+    scope: 'collections:write collections:read cms:read cms:write form:read form:write pages:read pages:write sites:read sites:write',
     state,
   });
   res.redirect(authorizationUri);
@@ -44,6 +44,6 @@ export const authCallback = async (req, res) => {
     res.redirect('/?authenticated=true');
   } catch (error) {
     console.error('Access Token Error:', error.message);
-    res.status(500).json('Authentication failed due to Access Token Error');
+    res.status(500).json('Authentication failed due to an AX ASS Token Error');
   }
 };

@@ -2,7 +2,7 @@ import { createWebflowClient } from '../utils/webflowUtils.js';
 
 const webflowClientMiddleware = async (req, res, next) => {
   try {
-    const accessToken = req.cookies.webflow_access_token || process.env.WEBFLOW_API_TOKEN;
+    const accessToken = req.cookies.webflow_access_token;
 
     if (!accessToken) {
       return res.status(401).json({ message: 'User not authenticated' });
