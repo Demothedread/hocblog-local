@@ -14,16 +14,16 @@ export const createBlogPost = async (req, res) => {
   };
 
   try {
-    const webflowClient = await createWebflowClient();
+    const webflowClient = await createWebflowClient(req.cookies.webflow_access_token);
 
     const webflowResponse = await webflowClient.post(
-      `https://api.webflow.com/collections/${process.env.WEBFLOW_COLLECTION_ID}/items`,
+      `/collections/${process.env.WEBFLOW_COLLECTION_ID}/items`,
       { fields: cmsData }
     );
 
     res.status(200).json({ message: 'Blog post created successfully', data: webflowResponse.data });
   } catch (error) {
     console.error('Error creating blog post:', error);
-    res.status(500).json({ message: 'Server Error at Blog Step', error: error.message });
+    res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
 };

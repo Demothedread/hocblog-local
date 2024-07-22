@@ -1,4 +1,34 @@
-title {
+hero {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 10%;
+  border-radius: 20px; 
+  background-image: linear-gradient(to bottom, #baddac 0%, #813e93 100%);
+  background-size: cover;
+  opacity: 0.8;
+  z-index: -1;
+}
+
+a {
+  font-family: 'cardcamio-mn';
+  font-size: x-large; 
+  width: 100%;
+  text-shadow: wheat;
+  color: crimson;
+  stroke: darkred;
+  background-color: linear-gradient(20, #f4f4f4, #b4b4b4);
+  stroke-width: 1.5px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: pulse 2s infinite; 
+  animation-timing-function: ease-in-out;
+  transition: color 0.5s ease;
+  position: relative;
+}
+
+h1 {
   font-family: 'cardcamio-mn';
   font-size: x-large; 
   text-align: center;
@@ -94,9 +124,96 @@ button {
   cursor: pointer;
 }
 button:hover {
-  background-color: #8406e5cc;
+  background-color: #910217;
 }
 #result {
   margin-top: 20px;
   font-size: 1.2em;
 }
+
+#result h2, #result h3, #result p, #result img {
+  margin-bottom: 10px;
+}
+
+.archive-link {
+  margin-top: 20px;
+}
+
+.archive-link a {
+  color: #2bf7f4;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.archive-link a:hover {
+  text-decoration: underline;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex
+}
+
+nav ul li a {
+  display: block;
+  color: #f4f4f4;
+  text-align: right;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+header {
+  background-color: #2bf7f4;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  font-size: 2em;
+  position: relative;
+  z-index: 999;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #2bf7f4;
+  color: white;
+  padding: 10px;
+  z-index: 999;
+}
+
+nav ul {
+  list-style-type: armenian;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+}
+
+nav ul li a {
+  display: block;
+  color: white;
+  text-align: right;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-family: 'lincoln-electric-regular';
+  transition: color 0.8s;
+  stroke: crimson;
+  stroke-width: 2px;
+}
+
+li {
+  display: inline-block;
+  margin-right: 10px;
+}
+

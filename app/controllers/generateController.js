@@ -15,7 +15,7 @@ export const generateContentHandler = async (req, res) => {
     // Make all necessary API requests concurrently for improved performance
     const [chatGptResponse, summaryResponse, imageResponse] = await Promise.all([
       axios.post(process.env.CHATGPT_API_URL, {
-        model: 'gpt-4o-mini',
+        model: 'gpt-4.0-turbo',
         messages: [{ role: 'system', content: prompt }],
         max_tokens: 2800,
         temperature: 0.5
@@ -26,7 +26,7 @@ export const generateContentHandler = async (req, res) => {
         }
       }),
       axios.post(process.env.CHATGPT_API_URL, {
-        model: 'gpt-4o-mini',
+        model: 'gpt-4.0-turbo',
         messages: [{ role: 'system', content: `Summarize the following blog post in 250 characters: ${prompt}` }],
         max_tokens: 175,
         temperature: 0.4
@@ -37,12 +37,10 @@ export const generateContentHandler = async (req, res) => {
         }
       }),
       axios.post(process.env.DALLE_API_URL, {
-        model: 'dalle-mini',
-        prompt: `Create an abstract image that captures the essence of the following blog post: ${prompt.slice(0, 100)}`,
+        prompt: `Create an image that captures the essence of the following blog post: ${prompt.slice(0, 100)}`,
         n: 1,
         size: '512x512',
         response_format: 'url',
-        style: 'vivid'
       }, {
         headers: {
           'Authorization': `Bearer ${process.env.CHATGPT_API_KEY}`,
