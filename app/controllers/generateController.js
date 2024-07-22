@@ -21,7 +21,7 @@ export const generateContent = async (req, res) => {
         temperature: 0.5
       }, {
         headers: {
-          'Authorization': `Bearer ${process.env.CHATGPT_API_KEY}`,
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
           'Content-Type': 'application/json'
         }
       }),
@@ -32,7 +32,7 @@ export const generateContent = async (req, res) => {
         temperature: 0.4
       }, {
         headers: {
-          'Authorization': `Bearer ${process.env.CHATGPT_API_KEY}`,
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
           'Content-Type': 'application/json'
         }
       }),
@@ -44,7 +44,7 @@ export const generateContent = async (req, res) => {
         style: 'vivid'
       }, {
         headers: {
-          'Authorization': `Bearer ${process.env.CHATGPT_API_KEY}`,
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
           'Content-Type': 'application/json'
         }
       })
@@ -65,7 +65,7 @@ export const generateContent = async (req, res) => {
       keywords: ['example', 'blog', 'post'],
       category: 'General'
     };
-
+    return response;
     // Save to CSV and send successful response
     saveToCSV(response);
     res.status(200).json({ message: 'Content generated successfully', data: response });

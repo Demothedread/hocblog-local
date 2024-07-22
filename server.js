@@ -6,7 +6,6 @@ import authRoutes from './routes/authRoutes.js';
 import generateRoutes from './routes/generateRoutes.js';
 import blogRoutes from './routes/blogRoutes.js';
 
-// Load environment variables from .env file
 dotenv.config();
 
 const app = express();
