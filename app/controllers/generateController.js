@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { generateChatGPTPrompt, saveToCSV } from '../utils/chatgptUtils.js';
 
-export const generateContent = async (req, res) => {
+export const generateContentHandler = async (req, res) => {
   try {
     const { topic, length, comprehension, tone, destination } = req.body;
 
@@ -21,7 +21,7 @@ export const generateContent = async (req, res) => {
         temperature: 0.5
       }, {
         headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Authorization': `Bearer ${process.env.CHATGPT_API_KEY}`,
           'Content-Type': 'application/json'
         }
       }),
@@ -32,19 +32,20 @@ export const generateContent = async (req, res) => {
         temperature: 0.4
       }, {
         headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Authorization': `Bearer ${process.env.CHATGPT_API_KEY}`,
           'Content-Type': 'application/json'
         }
       }),
       axios.post(process.env.DALLE_API_URL, {
-        prompt: `Create an image that captures the essence of the following blog post: ${prompt.slice(0, 100)}`,
+        model: 'dalle-mini',
+        prompt: `Create an abstract image that captures the essence of the following blog post: ${prompt.slice(0, 100)}`,
         n: 1,
         size: '512x512',
         response_format: 'url',
         style: 'vivid'
       }, {
         headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Authorization': `Bearer ${process.env.CHATGPT_API_KEY}`,
           'Content-Type': 'application/json'
         }
       })
@@ -65,7 +66,7 @@ export const generateContent = async (req, res) => {
       keywords: ['example', 'blog', 'post'],
       category: 'General'
     };
-    return response;
+
     // Save to CSV and send successful response
     saveToCSV(response);
     res.status(200).json({ message: 'Content generated successfully', data: response });

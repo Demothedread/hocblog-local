@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const destination = document.getElementById('destination').value;
 
     try {
-      const response = await fetch('/generate', { // Ensure this endpoint matches your server route
+      const response = await fetch('/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -19,6 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const data = await response.json();
       document.getElementById('result').innerText = data.message;
+      
+      if (data.data) {
+        // Display the generated content, summary, and image URL
+        document.getElementById('result').innerHTML = `
+          <h2>${data.data.title}</h2>
+          <h3>${data.data.subtitle}</h3>
+          <p>${data.data.content}</p>
+          <p><strong>Summary:</strong> ${data.data.summary}</p>
+          <img src="${data.data.imageUrl}" alt="Generated Image" />
+        `;
+      }
     } catch (error) {
       console.error('Error:', error);
       document.getElementById('result').innerText = 'An error occurred. Please try again.';

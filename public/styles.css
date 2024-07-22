@@ -1,3 +1,19 @@
+title {
+  font-family: 'cardcamio-mn';
+  font-size: x-large; 
+  text-align: center;
+  text-shadow: wheat;
+  color: crimson;
+  stroke: darkred;
+  background-color: linear-gradient(20, #f4f4f4, #b4b4b4);
+  stroke-width: 1.5px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: pulse 2s infinite; 
+  animation-timing-function: ease-in-out;
+  transition: color 0.5s ease;
+}
+
 body {
   font-family: 'bulletin-typewriter-mn', 'Helvetica Neue', sans-serif;
   background-color: #f4f4f4;
@@ -14,6 +30,7 @@ body {
   min-height: 100vh;
   overflow: hidden;
 }
+
 body::before {
   content: '';
   position: absolute;

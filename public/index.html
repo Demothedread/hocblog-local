@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>OTTO - Make Do </title>
     <link rel="stylesheet" href="https://use.typekit.net/yvq3jwv.css">
-    <title>OTTO - Make OTTO Do Everything</title>
-    <link rel="stylesheet" href="/styles.css">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
@@ -15,14 +15,16 @@
             <label for="topic">Subject Matter:</label>
             <input type="text" id="topic" name="topic" required><br><br>
             
-            <label for="length">Word Length:</label>
-            <select id="length" name="length" required>
-                <option value="250">Short (250 words)</option>
-                <option value="600">Medium (600 words)</option>
-                <option value="1200">Long (1200 words)</option>
-                <option value="3000">Max (3000 words)</option>
-                <option value="Custom">Custom</option>
-            </select><br><br>
+            <label for="comprehension">Audience Comprehension:</label>
+            <select id="comprehension" name="comprehension" required>
+                <option value="Explain Like I'm 5">Explain Like I'm 5</option>
+                <option value="General Audience">General Audience</option>
+                <option value="Industry Veterans">Industry Veterans</option>
+                <option value="phD Dissertation">PhD Dissertation</option>
+                <option value="Experts Only">Experts Only</option>
+                    <option value="Custom">Custom</option>
+                    <option value="custom_input">Enter custom audience comprehension</option>
+            </select>
 
             <label for="comprehension">Audience Comprehension:</label>
             <select id="comprehension" name="comprehension" required>
@@ -56,6 +58,9 @@
             <button type="submit">Generate</button>
         </form>
         <div id="result"></div>
+        <div class="archive-link">
+            <a href="history/archive.csv" download>Download Archive</a>
+        </div>
     </div>
     <script src="scripts.js"></script>
 </body>

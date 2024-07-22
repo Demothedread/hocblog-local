@@ -1,8 +1,8 @@
 import express from 'express';
-import { generateContent } from '../app/controllers/generateController.js';
+import { generateContentHandler } from '../app/controllers/generateController.js';
 
 const router = express.Router();
 
-router.post('/', generateContent);
+router.post('/', generateContentHandler);
 
 export default router;
