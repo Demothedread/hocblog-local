@@ -1,4 +1,6 @@
-import { createWebflowClient } from '../app/utils/webflowUtils.js';
+import { createWebflowClient } from '../archived/app/utils/webflowUtils.js';
+import WebflowClient from 'webflow-api';
+import getToken from './tokens.js';
 
 const webflowClientMiddleware = async (req, res, next) => {
   try {
