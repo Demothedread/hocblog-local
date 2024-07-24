@@ -5,72 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://use.typekit.net/yvq3jwv.css">
-    <title>OTTO - Generate Content</title>
+    <title>Doremi - Generate Content</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <div class="hero">
-            <a href="#top">OTTO: Make Do Everything</a>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Projects</a></li>
-                <li><a href="#">Resources</a></li>
-                <li><a href="#">A Few Too Many</a></li>
-                </ul>
-        </nav>
-    </div>  
-    <div class="container">
-        <h1>Generate a Blog Post with OTTO</h1>
-        <form id="blogForm">
-            <label for="topic">Subject Matter:</label>
-            <input type="text" id="topic" name="topic" required><br><br>
-            
-            <label for="length">Word Length:</label>
-            <select id="length" name="length" required>
-                <option value="250">Short (250 words)</option>
-                <option value="600">Medium (600 words)</option>
-                <option value="1200">Long (1200 words)</option>
-                <option value="3000">Max (3000 words)</option>
-                <option value="Custom">Custom</option>
-            </select><br><br>
+    <div class="grid-container">
+            <header>
+                <h1>Doremi</h1>: Generate Content</h1>
+                <p>A powerful AI-powered content generator for your blog, website, or social media.</p>
+            </header>
+                <a href="#top">Doremi: Fah so la</a>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Projects</a></li>
+                    <li><a href="#">Resources</a></li>
+                    <li><a href="#">A Few Too Many</a></li>
+                    </ul>
+            </nav>  
+            <div class="content">
+            <p>Welcome to Doremi, a powerful AI-powered content generator designed to help you create engaging, informative content for your blog, website, or social media. Whether you're creating a blog post, a social media post, or a news article, OTTO can help you generate content that resonates with your target audience and is easy to read and understand.</p>
+            <p>Doremi uses advanced natural language processing and machine learning techniques to create engaging, informative content that is both visually appealing and easy to read. With OTTO, you can focus on writing, and the AI will do the rest.</p>
+            <p>To get started, simply fill out the form </p>
+            </div> 
+        <aside class="sidebar">
+            <a id="authLink" href="/auth">Authenticate with Webflow</a>
+        </aside>
+        <main class="main-content" id="formSection" style:"display: none;"></main>
+            <form id="blogForm">
+                <label for="topic">Subject Matter:</label>
+                <input type="text" id="topic" name="topic" required><br><br>
+                
+                <label for="length">Word Length:</label>
+                <select id="length" name="length" required>
+                    <option value="250">Short (250 words)</option>
+                    <option value="600">Medium (600 words)</option>
+                    <option value="1200">Long (1200 words)</option>
+                    <option value="3000">Max (3000 words)</option>
+                    <option value="Custom">Custom</option>
+                </select><br><br>
 
-            <label for="comprehension">Audience Comprehension:</label>
-            <select id="comprehension" name="comprehension" required>
-                <option value="Explain Like I'm 5">Explain Like I'm 5</option>
-                <option value="General Audience">General Audience</option>
-                <option value="Industry Veterans">Industry Veterans</option>
-                <option value="phD Dissertation Committee">phD Dissertation Committee</option>
-                <option value="Experts Only">Experts Only</option>
-            </select><br><br>
+                <label for="comprehension">Audience Comprehension:</label>
+                <select id="comprehension" name="comprehension" required>
+                    <option value="Explain Like I'm 5">Explain Like I'm 5</option>
+                    <option value="General Audience">General Audience</option>
+                    <option value="Industry Veterans">Industry Veterans</option>
+                    <option value="phD Dissertation Committee">phD Dissertation Committee</option>
+                    <option value="Experts Only">Experts Only</option>
+                </select><br><br>
 
-            <label for="tone">Tone:</label>
-            <select id="tone" name="tone" required>
-                <option value="casual chat">Casual Chat</option>
-                <option value="personal appeal">Personal Appeal</option>
-                <option value="objectively informative">Objectively Informative</option>
-                <option value="passionately persuasive">Passionately Persuasive</option>
-                <option value="subversively post-structural">Subversively Post-Structural</option>
-            </select><br><br>
+                <label for="tone">Tone:</label>
+                <select id="tone" name="tone" required>
+                    <option value="casual chat">Casual Chat</option>
+                    <option value="personal appeal">Personal Appeal</option>
+                    <option value="objectively informative">Objectively Informative</option>
+                    <option value="passionately persuasive">Passionately Persuasive</option>
+                    <option value="subversively post-structural">Subversively Post-Structural</option>
+                </select><br><br>
 
-            <label for="destination">Destination:</label>
-            <select id="destination" name="destination" required>
-                <option value="Blog Post">CMS Item (Blog Post)</option>
-                <option value="Word Doc">Word Doc</option>
-                <option value="Tweet">Tweet</option>
-                <option value="Instagram Post">Instagram Post</option>
-                <option value="Email">Email</option>
-                <option value="Presentation">Presentation</option>
-                <option value="Project Outline">Project Outline</option>
-            </select><br><br>
+                <label for="destination">Destination:</label>
+                <select id="destination" name="destination" required>
+                    <option value="Blog Post">CMS Item (Blog Post)</option>
+                    <option value="Word Doc">Word Doc</option>
+                    <option value="Tweet">Tweet</option>
+                    <option value="Instagram Post">Instagram Post</option>
+                    <option value="Email">Email</option>
+                    <option value="Presentation">Presentation</option>
+                    <option value="Project Outline">Project Outline</option>
+                </select><br><br>
 
-            <button type="submit">Generate</button>
-        </form>
-        <div id="result"></div>
+                <button type="submit">Generate</button>
+            </form>
+        <div id="loading" class="loading" style="display: none;">Loading...</div>
+        <div id="resultContainer" class="result-container"></div>
+    </main>
+    <footer>
         <div class="archive-link">
             <a href="history/archive.csv" download>Download Archive</a>
         </div>
+    </footer>
     </div>
     <script src="scripts.js"></script>
 </body>

@@ -1,12 +1,14 @@
 const express = require('express');
 const axios = require('axios');
 const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const app = express();
 app.use(helmet());
 app.use(express.json());
 app.use(express.static('public'));
+app.use(cookieParser());
 
 const {
   PORT,
@@ -14,8 +16,7 @@ const {
   WEBFLOW_SITE_ID,
   WEBFLOW_API_KEY,
   CHATGPT_API_URL,
-  DALLE_API_URL,
-  CHATGPT_API_KEY
+  CHATGPT_API_KEY,
 } = process.env;
 
 // Middleware to initialize the Webflow client
@@ -25,14 +26,19 @@ const webflowClientMiddleware = (req, res, next) => {
     headers: {
       Authorization: `Bearer ${WEBFLOW_API_KEY}`,
       'accept-version': '1.0.0',
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   });
   next();
 };
 
 // Apply the Webflow client middleware
 app.use(webflowClientMiddleware);
+
+app.get('/auth', (req, res) => {
+  // Redirect to the callback with an authenticated parameter for demo purposes
+  res.redirect('/?authenticated=true');
+});
 
 app.post('/generate-blog', async (req, res) => {
   const { topic, length, comprehension, tone } = req.body;
@@ -42,15 +48,15 @@ app.post('/generate-blog', async (req, res) => {
     const chatGptResponse = await axios.post(
       CHATGPT_API_URL,
       {
-        model: 'gpt-4o-mini',
+        model: 'gpt-3.5-turbo',
         messages: [{ role: 'system', content: prompt }],
         max_tokens: parseInt(length),
       },
       {
         headers: {
           Authorization: `Bearer ${CHATGPT_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       }
     );
 
@@ -60,9 +66,9 @@ app.post('/generate-blog', async (req, res) => {
       fields: {
         name: `Blog Post About ${topic}`,
         'post-body': blogContent,
-        'slug': `blog-post-about-${topic.toLowerCase().replace(/\s+/g, '-')}`,
-        'published': true
-      }
+        slug: `blog-post-about-${topic.toLowerCase().replace(/\s+/g, '-')}`,
+        published: true,
+      },
     };
 
     const webflowResponse = await req.webflow.post(
