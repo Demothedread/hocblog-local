@@ -112,7 +112,7 @@ input, select {
   color: maroon;
   background-color: whitesmoke;
   max-width: 400px;
-  border: none;
+  border: #96ff6d;
   border-radius: 5px;
 }
 button {
@@ -140,13 +140,14 @@ button:hover {
 }
 
 .archive-link a {
-  color: #2bf7f4;
+  color: crimson;
   text-decoration: none;
   font-weight: bold;
 }
 
 .archive-link a:hover {
   text-decoration: underline;
+  background-color: antiquewhite;
 }
 
 nav ul {
@@ -166,12 +167,13 @@ nav ul li a {
 }
 
 header {
-  background-color: #2bf7f4;
-  color: white;
+  background-color: linear-gradient(to bottom, #8e244b,  rgb(50, 47, 110), #333);
+  color: whitesmoke;
   padding: 10px;
   text-align: center;
   font-size: 2em;
   position: relative;
+  filter: brightness(90%), contrast(80%), blur(3px), drop-shadow(10px);
   z-index: 999;
 }
 
@@ -186,15 +188,17 @@ nav {
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #2bf7f4;
-  color: white;
+  background-color: rgba(138, 220, 255, 0.649);
+  stroke: hsl(134, 100%, 62%);
+  stroke-width: 1.5px;
+  color: antiquewhite;
   padding: 10px;
   z-index: 999;
 }
 
 nav ul {
   list-style-type: armenian;
-  margin: 0;
+  margin: 10;
   padding: 0;
   overflow: hidden;
   display: flex;

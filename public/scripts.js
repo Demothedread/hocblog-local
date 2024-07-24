@@ -13,9 +13,20 @@ document.addEventListener('DOMContentLoaded', () => {
       authLink.style.display = 'none';
       formSection.style.display = 'block';
   } else {
+      if (!document.getElementById('authLink')) {
+          console.error('Element "authLink" not found in the DOM.');
+          return;
+      }
       formSection.style.display = 'none';
   }
-
+  
+  const getToken = async (user) => {
+    const token = process.env.WEBFLOW_API_KEY; // replace with actual logic
+    return token;
+  };
+  
+  export default getToken;
+  
   document.getElementById('blogForm').addEventListener('submit', async (event) => {
       event.preventDefault();
 
