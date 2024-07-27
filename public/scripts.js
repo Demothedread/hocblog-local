@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
               headers: {
                   'Content-Type': 'application/json'
               },
-              body: JSON.stringify({ topic, length, comprehension, tone })
+              body: JSON.stringify({ topic, length, comprehension, tone, destination })
           });
           const data = await response.json();
           loading.style.display = 'none';

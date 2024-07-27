@@ -19,10 +19,13 @@ app.use(cookieParser());
 const {
   PORT,
   WEBFLOW_COLLECTION_ID,
+  Weblow_CLIENT_ID,
+  WEBFLOW_CLIENT_SECRET,
   WEBFLOW_SITE_ID,
   WEBFLOW_API_KEY,
   OPENAI_API_KEY,
   DALLE_API_URL,
+  REDIRECT_URI,
 } = process.env;
 
 // Initialize OpenAI API client
@@ -34,11 +37,14 @@ const openai = new OpenAIApi(configuration);
 // Middleware to initialize the Webflow client
 const webflowClientMiddleware = (req, res, next) => {
   req.webflow = axios.create({
-    baseURL: `https://api.webflow.com/sites/${WEBFLOW_SITE_ID}`,
+    baseURL:'HTTPS://webflow.com/oath/authorize?client_id=${WEBFLOW_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=custom_code:read_write&cms:read_write&assets:read_write&sites:read_write&forms:read_write&pages:read_write',
     headers: {
       Authorization: `Bearer ${WEBFLOW_API_KEY}`,
       'accept-version': '1.0.0',
       'Content-Type': 'application/json',
+      'Client Secret': WEBFLOW_CLIENT_SECRET,
+      'Collection ID': WEBFLOW_COLLECTION_ID,
+      'redirect_uri': REDIRECT_URI,
     },
   });
   next();
