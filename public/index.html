@@ -5,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://use.typekit.net/yvq3jwv.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <title>Doremi - Generate Content</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <div class="grid-container">
-            <header class="rainbow-text">
-                <h1>Doremi</h1>: Generate Content</h1>
+    <header>    
+        <div class="grid-container">
+            <div class="rainbow-text">
+                <h1>Doremi: Generate Content</h1>
                 <p>A powerful AI-powered content generator for your blog, website, or social media.</p>
-            </header>
-                <a href="#top">Doremi: Fah so la</a>
+            </div>
             <nav>
                 <ul>
                     <li><a href="#">Home</a></li>
@@ -22,17 +24,20 @@
                     <li><a href="#">Projects</a></li>
                     <li><a href="#">Resources</a></li>
                     <li><a href="#">A Few Too Many</a></li>
-                    </ul>
-            </nav>  
-            <div class="content">
-            <p>Welcome to Doremi, a powerful AI-powered content generator designed to help you create engaging, informative content for your blog, website, or social media. Whether you're creating a blog post, a social media post, or a news article, OTTO can help you generate content that resonates with your target audience and is easy to read and understand.</p>
-            <p>Doremi uses advanced natural language processing and machine learning techniques to create engaging, informative content that is both visually appealing and easy to read. With OTTO, you can focus on writing, and the AI will do the rest.</p>
-            <p>To get started, simply fill out the form </p>
-            </div> 
-        <main class="main-content" id="formSection" style:"display: none;"></main>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="content">
+            <p>Welcome to Doremi, a powerful AI-powered content generator designed to help you create engaging, informative content for your blog, website, or social media. Whether you're creating a blog post, a social media post, or a news article, OTTO can help you generate content that resonates with your target audience and is easy to read and understand.</p> 
+            <p>Doremi uses advanced natural language processing and machine learning techniques to create engaging, informative content that is both visually appealing and easy to read. With OTTO, you can focus on writing, and the AI will do the rest.</p> 
+            <p>To get started, simply fill out the form below:</p>
+        </div>
+        <section class="form-section">
             <form id="blogForm">
                 <label for="topic">Subject Matter:</label>
-                <input type="text" id="topic" name="topic"  class=rainbow-rext required><br><br>
+                <input type="text" id="topic" name="topic" class="rainbow-text" required><br><br>
                 
                 <label for="length">Word Length:</label>
                 <select id="length" name="length" required>
@@ -74,15 +79,33 @@
 
                 <button type="submit">Generate</button>
             </form>
-        <div id="loading" class="loading" style="display: none;">Loading...</div>
-        <div id="resultContainer" class="result-container"></div>
+            <div id="loading" class="loading" style="display: none;">Loading...</div>
+            <div id="resultContainer" class="result-container"></div>
+        </section>
     </main>
     <footer>
         <div class="archive-link">
             <a href="history/archive.csv" download>Download Archive</a>
         </div>
     </footer>
-    </div>
-    <script src="scripts.js"></script>
+
+    <script>
+        document.getElementById('blogForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultContainer').innerHTML = '';
+            
+            // Simulating form submission logic
+            setTimeout(function() {
+                document.getElementById('loading').style.display = 'none';
+                const isSuccess = Math.random() > 0.2; // 80% chance of success
+                if (isSuccess) {
+                    document.getElementById('resultContainer').innerHTML = '<p style="color: green;">Content generated successfully!</p>';
+                } else {
+                    document.getElementById('resultContainer').innerHTML = '<p style="color: red;">Failed to generate content. Please try again.</p>';
+                }
+            }, 2000); // Simulate loading time
+        });
+    </script>
 </body>
 </html>

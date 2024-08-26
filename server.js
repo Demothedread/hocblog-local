@@ -19,9 +19,7 @@ app.use(cookieParser());
 const {
   PORT,
   WEBFLOW_COLLECTION_ID,
-  Weblow_CLIENT_ID,
   WEBFLOW_CLIENT_SECRET,
-  WEBFLOW_SITE_ID,
   WEBFLOW_API_KEY,
   OPENAI_API_KEY,
   DALLE_API_URL,
@@ -37,7 +35,7 @@ const openai = new OpenAIApi(configuration);
 // Middleware to initialize the Webflow client
 const webflowClientMiddleware = (req, res, next) => {
   req.webflow = axios.create({
-    baseURL:'HTTPS://webflow.com/oath/authorize?client_id=${WEBFLOW_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=custom_code:read_write&cms:read_write&assets:read_write&sites:read_write&forms:read_write&pages:read_write',
+    baseURL:'HTTPS://www.hocomnia.com/authorize?client_id=${WEBFLOW_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=custom_code:read_write&cms:read_write&assets:read_write&sites:read_write&forms:read_write&pages:read_write',
     headers: {
       Authorization: `Bearer ${WEBFLOW_API_KEY}`,
       'accept-version': '1.0.0',
@@ -144,7 +142,7 @@ app.post('/generate-blog', async (req, res) => {
     const cmsData = {
       fields: {
         'post-title': `Blog Post About ${topic}`,
-        slug: `blog-post-about-${topic.toLowerCase().replace(/\s+/g, '-')}`,
+        'slug': `blog-post-about-${topic.toLowerCase().replace(/\s+/g, '-')}`,
         'post-body': blogContent,
         'main-image': imageUrl,
         published: true,

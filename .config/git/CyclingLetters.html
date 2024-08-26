@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .cycling-title {
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="title">
+    <span class="cycling-title" id="letter1">B</span>
+    <span class="cycling-title" id="letter2">L</span>
+    <span class="cycling-title" id="letter3">O</span>
+    <span class="cycling-title" id="letter4">G</span>
+    <span class="cycling-title" id="letter5">G</span>
+    <span class="cycling-title" id="letter6">E</span>
+    <span class="cycling-title" id="letter7">R</span>
+  </h1>
+
+  <script>
+    const words = ["BLOGGER", "POSTER", "WRITER", "STYLIST", "TWEETER", "CHATTER", "CREATOR", "PLANNER", "RELAYER", "CLICKER", "ARTISAN"];
+    let wordIndex = 0;
+    let letterIndex = 0;
+    const cyclingElements = document.querySelectorAll('.cycling-title');
+
+    function cycleLetters() {
+      cyclingElements[letterIndex].textContent = String.fromCharCode(65 + Math.floor(Math.random() * 26)); // Generate a random letter
+      letterIndex++;
+      if (letterIndex >= cyclingElements.length) {
+        letterIndex = 0;
+        wordIndex = (wordIndex + 1) % words.length;
+        setTimeout(() => {
+          cyclingElements[cyclingElements.length - 1].textContent = '.'; // Add a period at the end for seven-letter words
+        }, 500);
+      }
+    }
+
+    setInterval(cycleLetters, 500); // Change letters every 0.5 seconds
+  </script>
+</body>
+</html>
